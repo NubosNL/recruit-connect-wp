@@ -55,3 +55,39 @@ jQuery(document).ready(function($) {
         });
     });
 });
+(function($) {
+    'use strict';
+
+    $(document).ready(function() {
+        // Settings tabs functionality
+        $('.nav-tab-wrapper a').on('click', function(e) {
+            e.preventDefault();
+
+            // Remove active class from all tabs
+            $('.nav-tab-wrapper a').removeClass('nav-tab-active');
+
+            // Add active class to clicked tab
+            $(this).addClass('nav-tab-active');
+
+            // Hide all tab content
+            $('.tab-content').hide();
+
+            // Show the selected tab content
+            $($(this).attr('href')).show();
+        });
+
+        // Show the first tab by default
+        $('.nav-tab-wrapper a:first').trigger('click');
+
+        // Initialize sortable if it exists
+        if ($('#rcwp-detail-fields-sortable').length) {
+            $('#rcwp-detail-fields-sortable').sortable({
+                handle: '.dashicons-menu',
+                update: function(event, ui) {
+                    // Update field order if needed
+                }
+            });
+        }
+    });
+
+})(jQuery);

@@ -1,66 +1,93 @@
+<?php
+if (!defined('ABSPATH')) exit;
+
+$backup_enabled = get_option('rcwp_backup_enabled', false);
+$last_backup = get_option('rcwp_last_backup', '');
+?>
+
 <div class="wrap">
-    <h1><?php _e('Backup and Restore', 'recruit-connect-wp'); ?></h1>
+    <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
 
-    <?php if (isset($_GET['message'])): ?>
-        <div class="notice notice-success">
-            <p><?php
-                switch ($_GET['message']) {
-                    case 'backup_created':
-                        _e('Backup created successfully.', 'recruit-connect-wp');
-                        break;
-                    case 'backup_restored':
-                        _e('Backup restored successfully.', 'recruit-connect-wp');
-                        break;
-                }
-            ?></p>
-        </div>
-    <?php endif; ?>
-
-    <div class="card">
-        <h2><?php _e('Create Backup', 'recruit-connect-wp'); ?></h2>
-        <p><?php _e('Create a backup of all vacancies, applications, settings, and uploaded files.', 'recruit-connect-wp'); ?></p>
-        <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
-            <?php wp_nonce_field('rcwp_manual_backup'); ?>
-            <input type="hidden" name="action" value="rcwp_manual_backup">
-            <button type="submit" class="button button-primary">
-                <?php _e('Create Backup', 'recruit-connect-wp'); ?>
-            </button>
-        </form>
-    </div>
-
-    <div class="card">
-        <h2><?php _e('Available Backups', 'recruit-connect-wp'); ?></h2>
-        <table class="wp-list-table widefat fixed striped">
-            <thead>
+    <div class="rcwp-backup-wrapper">
+        <!-- Backup Status -->
+        <div class="rcwp-backup-status">
+            <h2><?php _e('Backup Status', 'recruit-connect-wp'); ?></h2>
+            <table class="widefat">
                 <tr>
-                    <th><?php _e('Filename', 'recruit-connect-wp'); ?></th>
-                    <th><?php _e('Size', 'recruit-connect-wp'); ?></th>
-                    <th><?php _e('Date', 'recruit-connect-wp'); ?></th>
-                    <th><?php _e('Actions', 'recruit-connect-wp'); ?></th>
+                    <th><?php _e('Automatic Backup', 'recruit-connect-wp'); ?></th>
+                    <td>
+						<?php if ($backup_enabled): ?>
+                            <span class="status-enabled"><?php _e('Enabled', 'recruit-connect-wp'); ?></span>
+						<?php else: ?>
+                            <span class="status-disabled"><?php _e('Disabled', 'recruit-connect-wp'); ?></span>
+						<?php endif; ?>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($this->backup->get_backups() as $backup): ?>
+                <tr>
+                    <th><?php _e('Last Backup', 'recruit-connect-wp'); ?></th>
+                    <td>
+						<?php echo $last_backup ? esc_html($last_backup) : __('Never', 'recruit-connect-wp'); ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Backup Actions -->
+        <div class="rcwp-backup-actions">
+            <h2><?php _e('Backup Actions', 'recruit-connect-wp'); ?></h2>
+            <p>
+                <button type="button" class="button button-primary" id="rcwp-backup-now">
+					<?php _e('Backup Now', 'recruit-connect-wp'); ?>
+                </button>
+                <button type="button" class="button" id="rcwp-export-data">
+					<?php _e('Export Data', 'recruit-connect-wp'); ?>
+                </button>
+            </p>
+        </div>
+
+        <!-- Backup History -->
+        <div class="rcwp-backup-history">
+            <h2><?php _e('Backup History', 'recruit-connect-wp'); ?></h2>
+			<?php if (!empty($backup_history)): ?>
+                <table class="widefat">
+                    <thead>
                     <tr>
-                        <td><?php echo esc_html($backup['filename']); ?></td>
-                        <td><?php echo esc_html($backup['size']); ?></td>
-                        <td><?php echo esc_html($backup['date']); ?></td>
-                        <td>
-                            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>" style="display:inline;">
-                                <?php wp_nonce_field('rcwp_restore_backup'); ?>
-                                <input type="hidden" name="action" value="rcwp_restore_backup">
-                                <input type="hidden" name="backup" value="<?php echo esc_attr($backup['filename']); ?>">
-                                <button type="submit" class="button" onclick="return confirm('<?php esc_attr_e('Are you sure you want to restore this backup? This will overwrite all current data.', 'recruit-connect-wp'); ?>')">
-                                    <?php _e('Restore', 'recruit-connect-wp'); ?>
-                                </button>
-                            </form>
-                            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=rcwp_download_backup&backup=' . urlencode($backup['filename'])), 'rcwp_download_backup')); ?>" class="button">
-                                <?php _e('Download', 'recruit-connect-wp'); ?>
-                            </a>
-                        </td>
+                        <th><?php _e('Date', 'recruit-connect-wp'); ?></th>
+                        <th><?php _e('Type', 'recruit-connect-wp'); ?></th>
+                        <th><?php _e('Status', 'recruit-connect-wp'); ?></th>
+                        <th><?php _e('Actions', 'recruit-connect-wp'); ?></th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody>
+					<?php foreach ($backup_history as $backup): ?>
+                        <tr>
+                            <td><?php echo esc_html($backup['date']); ?></td>
+                            <td><?php echo esc_html($backup['type']); ?></td>
+                            <td><?php echo esc_html($backup['status']); ?></td>
+                            <td>
+                                <a href="<?php echo esc_url($backup['download_url']); ?>" class="button button-small">
+									<?php _e('Download', 'recruit-connect-wp'); ?>
+                                </a>
+                            </td>
+                        </tr>
+					<?php endforeach; ?>
+                    </tbody>
+                </table>
+			<?php else: ?>
+                <p><?php _e('No backup history available.', 'recruit-connect-wp'); ?></p>
+			<?php endif; ?>
+        </div>
+
+        <!-- Backup Settings -->
+        <div class="rcwp-backup-settings">
+            <h2><?php _e('Backup Settings', 'recruit-connect-wp'); ?></h2>
+            <form method="post" action="options.php">
+				<?php
+				settings_fields('rcwp_backup_settings');
+				do_settings_sections('rcwp_backup_settings');
+				submit_button();
+				?>
+            </form>
+        </div>
     </div>
 </div>
