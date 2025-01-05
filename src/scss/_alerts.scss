@@ -1,0 +1,30 @@
+.rcwp-alert {
+    padding: $spacing-md;
+    margin-bottom: $spacing-lg;
+    border-radius: $border-radius;
+    border-left: 4px solid;
+
+    &.success {
+        background-color: lighten($success-color, 45%);
+        border-left-color: $success-color;
+        color: darken($success-color, 10%);
+    }
+
+    &.error {
+        background-color: lighten($error-color, 45%);
+        border-left-color: $error-color;
+        color: darken($error-color, 10%);
+    }
+
+    &.warning {
+        background-color: lighten($warning-color, 45%);
+        border-left-color: $warning-color;
+        color: darken($warning-color, 10%);
+    }
+
+    &.info {
+        background-color: lighten($info-color, 45%);
+        border-left-color: $info-color;
+        color: darken($info-color, 10%);
+    }
+}

@@ -1,53 +1,28 @@
 .rcwp-application-form {
     background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    max-width: 800px;
-    margin: 0 auto;
-    @include card-shadow;
+    padding: $spacing-lg;
+    border-radius: $border-radius;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: $spacing-xl;
 
-    // Form Header
-    .rcwp-form-header {
-        margin-bottom: 2rem;
-        text-align: center;
-
-        h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        p {
-            color: $text-muted;
-        }
+    h2 {
+        margin-bottom: $spacing-lg;
+        color: $secondary-color;
     }
 
-    // Form Grid
-    .rcwp-form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-
-        @media (max-width: 767px) {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    // Form Fields
-    .rcwp-form-field {
-        margin-bottom: 1.5rem;
-
-        &.full-width {
-            grid-column: 1 / -1;
-        }
+    .form-row {
+        margin-bottom: $spacing-md;
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: $spacing-xs;
             font-weight: 500;
+            color: $text-color;
 
-            .required {
+            &.required:after {
+                content: '*';
                 color: $error-color;
-                margin-left: 0.25rem;
+                margin-left: 4px;
             }
         }
 
@@ -56,10 +31,12 @@
         input[type="tel"],
         textarea {
             width: 100%;
-            padding: 0.75rem;
+            padding: $spacing-sm;
             border: 1px solid $border-color;
-            border-radius: 4px;
-            transition: all 0.3s ease;
+            border-radius: $border-radius;
+            font-size: $font-size-base;
+            line-height: $line-height-base;
+            transition: $transition-base;
 
             &:focus {
                 outline: none;
@@ -77,168 +54,72 @@
             resize: vertical;
         }
 
-        .field-error {
-            color: $error-color;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            display: none;
+        .file-upload {
+            position: relative;
 
-            &.visible {
-                display: block;
-                animation: fadeIn 0.3s ease-out;
-            }
-        }
-    }
-
-    // File Upload
-    .rcwp-file-upload {
-        position: relative;
-
-        .upload-area {
-            border: 2px dashed $border-color;
-            padding: 2rem;
-            text-align: center;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-
-            &:hover {
-                border-color: $primary-color;
-                background: rgba($primary-color, 0.05);
+            input[type="file"] {
+                display: none;
             }
 
-            &.dragover {
-                border-color: $primary-color;
-                background: rgba($primary-color, 0.1);
-            }
-
-            .upload-icon {
-                font-size: 2rem;
-                color: $text-muted;
-                margin-bottom: 1rem;
-            }
-
-            .upload-text {
-                color: $text-muted;
-
-                strong {
-                    color: $primary-color;
-                }
-            }
-        }
-
-        input[type="file"] {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .file-preview {
-            display: none;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: $light-gray;
-            border-radius: 4px;
-
-            &.visible {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                animation: fadeIn 0.3s ease-out;
-            }
-
-            .file-info {
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-
-                .file-icon {
-                    font-size: 1.5rem;
-                    color: $text-muted;
-                }
-
-                .file-name {
-                    font-weight: 500;
-                }
-
-                .file-size {
-                    color: $text-muted;
-                    font-size: 0.875rem;
-                }
-            }
-
-            .remove-file {
-                color: $error-color;
+            .file-upload-button {
+                display: inline-block;
+                padding: $spacing-sm $spacing-md;
+                background: $background-color;
+                border: 1px solid $border-color;
+                border-radius: $border-radius;
                 cursor: pointer;
-                padding: 0.5rem;
-                border-radius: 4px;
-                transition: all 0.3s ease;
+                transition: $transition-base;
 
                 &:hover {
-                    background: rgba($error-color, 0.1);
+                    background: darken($background-color, 5%);
                 }
             }
+
+            .file-name {
+                margin-left: $spacing-sm;
+                color: $light-text;
+            }
+        }
+
+        .error-message {
+            color: $error-color;
+            font-size: 0.9em;
+            margin-top: $spacing-xs;
         }
     }
 
-    // Submit Button
-    .rcwp-form-submit {
-        text-align: center;
-        margin-top: 2rem;
+    .submit-button {
+        background: $primary-color;
+        color: #fff;
+        padding: $spacing-sm $spacing-xl;
+        border: none;
+        border-radius: $border-radius;
+        font-size: $font-size-base;
+        cursor: pointer;
+        transition: $transition-base;
 
-        button {
-            @include button;
-            background: $primary-color;
-            color: #fff;
-            min-width: 200px;
+        &:hover {
+            background: darken($primary-color, 10%);
+        }
 
-            &:hover {
-                background: darken($primary-color, 10%);
-            }
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
 
-            &:disabled {
-                background: $secondary-color;
-            }
-
-            .spinner {
-                display: none;
-                margin-left: 0.5rem;
-
-                &.visible {
-                    display: inline-block;
-                }
-            }
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: $spacing-sm;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
     }
+}
 
-    // Success Message
-    .rcwp-success-message {
-        display: none;
-        text-align: center;
-        padding: 2rem;
-
-        &.visible {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .success-icon {
-            font-size: 3rem;
-            color: $success-color;
-            margin-bottom: 1rem;
-        }
-
-        h4 {
-            color: $success-color;
-            margin-bottom: 1rem;
-        }
-
-        p {
-            color: $text-muted;
-        }
-    }
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

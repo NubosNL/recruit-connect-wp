@@ -1,309 +1,213 @@
-class VacancySearch {
-    constructor() {
-        this.form = document.querySelector('.rcwp-search-form');
-        this.resultsContainer = document.querySelector('.rcwp-vacancies-list');
-        this.loadMoreButton = document.querySelector('.rcwp-load-more-btn');
-        this.filterInputs = document.querySelectorAll('.rcwp-filter');
-        this.searchInput = document.querySelector('#rcwp-search-input');
-        this.salarySlider = document.querySelector('.rcwp-salary-range');
+/**
+ * Vacancy search and filter functionality
+ */
+(function($) {
+    'use strict';
 
-        this.currentPage = 1;
-        this.isLoading = false;
-        this.hasMore = true;
+    class VacancySearch {
+        constructor() {
+            // Elements
+            this.searchInput = $('#rcwp-search-input');
+            this.categoryFilter = $('#rcwp-category-filter');
+            this.educationFilter = $('#rcwp-education-filter');
+            this.jobtypeFilter = $('#rcwp-jobtype-filter');
+            this.salarySlider = $('#rcwp-salary-slider');
+            this.loadMoreBtn = $('#rcwp-load-more');
+            this.vacanciesList = $('#rcwp-vacancies-list');
 
-        this.initializeEvents();
-        this.initializeSalarySlider();
-        this.restoreFilterState();
-    }
-
-    initializeEvents() {
-        // Debounced search input handler
-        let searchTimeout;
-        this.searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                this.handleSearch();
-            }, 500);
-        });
-
-        // Filter change handlers
-        this.filterInputs.forEach(input => {
-            input.addEventListener('change', () => this.handleSearch());
-        });
-
-        // Load more button
-        if (this.loadMoreButton) {
-            this.loadMoreButton.addEventListener('click', () => this.loadMore());
-        }
-
-        // Handle browser back/forward
-        window.addEventListener('popstate', (e) => {
-            if (e.state && e.state.filters) {
-                this.setFilters(e.state.filters);
-                this.performSearch(false);
-            }
-        });
-    }
-
-    initializeSalarySlider() {
-        if (!this.salarySlider) return;
-
-        const minInput = this.salarySlider.querySelector('#salary-min');
-        const maxInput = this.salarySlider.querySelector('#salary-max');
-        const minValue = this.salarySlider.querySelector('#salary-min-value');
-        const maxValue = this.salarySlider.querySelector('#salary-max-value');
-
-        noUiSlider.create(this.salarySlider, {
-            start: [parseInt(minInput.value), parseInt(maxInput.value)],
-            connect: true,
-            range: {
-                'min': parseInt(minInput.getAttribute('min')),
-                'max': parseInt(maxInput.getAttribute('max'))
-            },
-            format: {
-                to: value => Math.round(value),
-                from: value => Math.round(value)
-            }
-        });
-
-        this.salarySlider.noUiSlider.on('update', (values) => {
-            minValue.textContent = this.formatSalary(values[0]);
-            maxValue.textContent = this.formatSalary(values[1]);
-            minInput.value = values[0];
-            maxInput.value = values[1];
-        });
-
-        this.salarySlider.noUiSlider.on('change', () => this.handleSearch());
-    }
-
-    handleSearch() {
-        this.currentPage = 1;
-        this.performSearch(true);
-    }
-
-    async performSearch(updateUrl = true) {
-        if (this.isLoading) return;
-
-        this.isLoading = true;
-        this.showLoader();
-
-        const filters = this.getFilters();
-
-        try {
-            const response = await this.fetchVacancies(filters);
-
-            if (response.success) {
-                this.updateResults(response.data, this.currentPage === 1);
-                this.hasMore = response.data.max_pages > this.currentPage;
-                this.toggleLoadMoreButton();
-
-                if (updateUrl) {
-                    this.updateUrl(filters);
-                }
-            } else {
-                this.showError('Search failed. Please try again.');
-            }
-        } catch (error) {
-            this.showError('An error occurred while searching.');
-            console.error('Search error:', error);
-        } finally {
+            // State
+            this.currentPage = 1;
             this.isLoading = false;
-            this.hideLoader();
-        }
-    }
+            this.filters = {
+                search: '',
+                category: '',
+                education: '',
+                jobtype: '',
+                salary_min: '',
+                salary_max: ''
+            };
 
-    async loadMore() {
-        if (this.isLoading || !this.hasMore) return;
-
-        this.currentPage++;
-        await this.performSearch(false);
-    }
-
-    async fetchVacancies(filters) {
-        const formData = new FormData();
-        formData.append('action', 'rcwp_search_vacancies');
-        formData.append('nonce', rcwpFront.nonce);
-        formData.append('page', this.currentPage);
-
-        for (const [key, value] of Object.entries(filters)) {
-            formData.append(key, value);
+            this.initializeComponents();
+            this.bindEvents();
         }
 
-        const response = await fetch(rcwpFront.ajaxurl, {
-            method: 'POST',
-            body: formData
-        });
+        initializeComponents() {
+            // Initialize salary range slider if it exists
+            if (this.salarySlider.length) {
+                const salaryRange = this.getSalaryRange();
+                this.salarySlider.slider({
+                    range: true,
+                    min: salaryRange.min,
+                    max: salaryRange.max,
+                    values: [salaryRange.min, salaryRange.max],
+                    slide: (event, ui) => {
+                        $('#salary-min').val(ui.values[0]);
+                        $('#salary-max').val(ui.values[1]);
+                    },
+                    stop: () => this.handleFiltersChange()
+                });
 
-        return await response.json();
-    }
-
-    updateResults(data, replace = true) {
-        const html = this.generateVacanciesHtml(data.vacancies);
-
-        if (replace) {
-            this.resultsContainer.innerHTML = html;
-        } else {
-            this.resultsContainer.insertAdjacentHTML('beforeend', html);
-        }
-
-        this.updateResultsCount(data.total);
-    }
-
-    generateVacanciesHtml(vacancies) {
-        return vacancies.map(vacancy => `
-            <div class="rcwp-vacancy-card">
-                <h3 class="rcwp-vacancy-title">
-                    <a href="${vacancy.url}">${vacancy.title}</a>
-                </h3>
-                <div class="rcwp-vacancy-meta">
-                    ${this.generateMetaHtml(vacancy.meta)}
-                </div>
-                <div class="rcwp-vacancy-excerpt">
-                    ${vacancy.excerpt}
-                </div>
-                <a href="${vacancy.url}" class="rcwp-vacancy-link">
-                    ${rcwpFront.strings.viewDetails}
-                </a>
-            </div>
-        `).join('');
-    }
-
-    generateMetaHtml(meta) {
-        const items = [];
-
-        if (meta.company) {
-            items.push(`<span class="rcwp-company">${meta.company}</span>`);
-        }
-        if (meta.location) {
-            items.push(`<span class="rcwp-location">${meta.location}</span>`);
-        }
-        if (meta.salary) {
-            items.push(`<span class="rcwp-salary">${meta.salary}</span>`);
-        }
-        if (meta.jobtype) {
-            items.push(`<span class="rcwp-jobtype">${meta.jobtype}</span>`);
-        }
-
-        return items.join(' • ');
-    }
-
-    getFilters() {
-        const filters = {
-            search: this.searchInput.value,
-            category: document.querySelector('[data-filter="category"]')?.value,
-            education: document.querySelector('[data-filter="education"]')?.value,
-            jobtype: document.querySelector('[data-filter="jobtype"]')?.value,
-            salary_min: document.querySelector('#salary-min')?.value,
-            salary_max: document.querySelector('#salary-max')?.value
-        };
-
-        return Object.fromEntries(
-            Object.entries(filters).filter(([_, v]) => v != null && v !== '')
-        );
-    }
-
-    setFilters(filters) {
-        if (filters.search) {
-            this.searchInput.value = filters.search;
-        }
-
-        this.filterInputs.forEach(input => {
-            const filterName = input.dataset.filter;
-            if (filters[filterName]) {
-                input.value = filters[filterName];
+                // Set initial values
+                $('#salary-min').val(this.salarySlider.slider('values', 0));
+                $('#salary-max').val(this.salarySlider.slider('values', 1));
             }
-        });
-
-        if (this.salarySlider && filters.salary_min && filters.salary_max) {
-            this.salarySlider.noUiSlider.set([
-                filters.salary_min,
-                filters.salary_max
-            ]);
         }
-    }
 
-    updateUrl(filters) {
-        const url = new URL(window.location);
+        bindEvents() {
+            // Search input with debounce
+            let searchTimeout;
+            this.searchInput.on('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => this.handleFiltersChange(), 500);
+            });
 
-        // Clear existing parameters
-        url.searchParams.forEach((_, key) => {
-            if (key !== 'post_type') {
-                url.searchParams.delete(key);
+            // Filter changes
+            this.categoryFilter.on('change', () => this.handleFiltersChange());
+            this.educationFilter.on('change', () => this.handleFiltersChange());
+            this.jobtypeFilter.on('change', () => this.handleFiltersChange());
+
+            // Load more
+            this.loadMoreBtn.on('click', () => this.loadMore());
+
+            // Browser back/forward buttons
+            window.addEventListener('popstate', (e) => {
+                if (e.state) {
+                    this.filters = e.state.filters;
+                    this.currentPage = e.state.page;
+                    this.updateFiltersUI();
+                    this.fetchVacancies(false);
+                }
+            });
+        }
+
+        handleFiltersChange() {
+            this.currentPage = 1;
+            this.updateFilters();
+            this.fetchVacancies(true);
+            this.updateURL();
+        }
+
+        updateFilters() {
+            this.filters = {
+                search: this.searchInput.val(),
+                category: this.categoryFilter.val(),
+                education: this.educationFilter.val(),
+                jobtype: this.jobtypeFilter.val(),
+                salary_min: $('#salary-min').val(),
+                salary_max: $('#salary-max').val()
+            };
+        }
+
+        updateURL() {
+            const params = new URLSearchParams();
+            Object.entries(this.filters).forEach(([key, value]) => {
+                if (value) params.set(key, value);
+            });
+
+            const newURL = `${window.location.pathname}?${params.toString()}`;
+            window.history.pushState(
+                { filters: this.filters, page: this.currentPage },
+                '',
+                newURL
+            );
+        }
+
+        updateFiltersUI() {
+            this.searchInput.val(this.filters.search);
+            this.categoryFilter.val(this.filters.category);
+            this.educationFilter.val(this.filters.education);
+            this.jobtypeFilter.val(this.filters.jobtype);
+
+            if (this.salarySlider.length) {
+                this.salarySlider.slider('values', [
+                    this.filters.salary_min,
+                    this.filters.salary_max
+                ]);
+                $('#salary-min').val(this.filters.salary_min);
+                $('#salary-max').val(this.filters.salary_max);
             }
-        });
+        }
 
-        // Add new parameters
-        Object.entries(filters).forEach(([key, value]) => {
-            if (value) {
-                url.searchParams.set(key, value);
+        async fetchVacancies(replaceContent = true) {
+            if (this.isLoading) return;
+
+            this.isLoading = true;
+            this.toggleLoading(true);
+
+            try {
+                const response = await $.ajax({
+                    url: rcwp_vars.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'rcwp_search_vacancies',
+                        nonce: rcwp_vars.nonce,
+                        page: this.currentPage,
+                        ...this.filters
+                    }
+                });
+
+                if (response.success) {
+                    this.updateVacanciesList(response.data, replaceContent);
+                    this.updateLoadMoreButton(response.data.max_pages);
+                } else {
+                    console.error('Error fetching vacancies:', response.data);
+                }
+            } catch (error) {
+                console.error('Ajax error:', error);
+            } finally {
+                this.isLoading = false;
+                this.toggleLoading(false);
             }
-        });
+        }
 
-        window.history.pushState(
-            { filters: filters },
-            '',
-            url.toString()
-        );
-    }
+        updateVacanciesList(data, replaceContent) {
+            const vacanciesHtml = data.html;
 
-    restoreFilterState() {
-        const params = new URLSearchParams(window.location.search);
-        const filters = {};
-
-        params.forEach((value, key) => {
-            if (key !== 'post_type') {
-                filters[key] = value;
+            if (replaceContent) {
+                this.vacanciesList.html(vacanciesHtml);
+            } else {
+                this.vacanciesList.find('.rcwp-vacancies-grid').append(vacanciesHtml);
             }
-        });
 
-        if (Object.keys(filters).length > 0) {
-            this.setFilters(filters);
-            this.performSearch(false);
+            // Animate new items
+            this.vacanciesList.find('.rcwp-vacancy-card').addClass('animated fadeIn');
+        }
+
+        updateLoadMoreButton(maxPages) {
+            if (this.currentPage >= maxPages) {
+                this.loadMoreBtn.hide();
+            } else {
+                this.loadMoreBtn.show();
+            }
+        }
+
+        loadMore() {
+            this.currentPage++;
+            this.fetchVacancies(false);
+        }
+
+        toggleLoading(show) {
+            if (show) {
+                this.vacanciesList.addClass('loading');
+                this.loadMoreBtn.prop('disabled', true);
+            } else {
+                this.vacanciesList.removeClass('loading');
+                this.loadMoreBtn.prop('disabled', false);
+            }
+        }
+
+        getSalaryRange() {
+            // This should be populated with actual min/max values from the server
+            return {
+                min: parseInt(rcwp_vars.salary_range.min) || 0,
+                max: parseInt(rcwp_vars.salary_range.max) || 100000
+            };
         }
     }
 
-    formatSalary(value) {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'EUR'
-        }).format(value);
-    }
+    // Initialize on document ready
+    $(document).ready(() => {
+        new VacancySearch();
+    });
 
-    showLoader() {
-        this.resultsContainer.classList.add('loading');
-    }
-
-    hideLoader() {
-        this.resultsContainer.classList.remove('loading');
-    }
-
-    showError(message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'rcwp-error-message';
-        errorDiv.textContent = message;
-
-        this.resultsContainer.insertAdjacentElement('beforebegin', errorDiv);
-
-        setTimeout(() => errorDiv.remove(), 5000);
-    }
-
-    toggleLoadMoreButton() {
-        if (this.loadMoreButton) {
-            this.loadMoreButton.style.display = this.hasMore ? 'block' : 'none';
-        }
-    }
-
-    updateResultsCount(total) {
-        const countElement = document.querySelector('.rcwp-results-count');
-        if (countElement) {
-            countElement.textContent = total === 1
-                ? rcwpFront.strings.oneResult
-                : rcwpFront.strings.multipleResults.replace('%d', total);
-        }
-    }
-}
-
-// Initialize on document ready
-document.addEventListener('DOMContentLoaded', () => {
-    new VacancySearch();
-});
+})(jQuery);

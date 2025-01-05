@@ -1,0 +1,79 @@
+.rcwp-vacancy-card {
+    background: #fff;
+    border-radius: $border-radius;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    transition: $transition-base;
+
+    &:hover {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .vacancy-header {
+        margin-bottom: $spacing-md;
+
+        .vacancy-title {
+            margin: 0 0 $spacing-sm;
+            font-size: 1.4em;
+
+            a {
+                color: $secondary-color;
+                text-decoration: none;
+                transition: $transition-base;
+
+                &:hover {
+                    color: $primary-color;
+                }
+            }
+        }
+
+        .vacancy-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: $spacing-md;
+            color: $light-text;
+            font-size: 0.9em;
+
+            span {
+                display: flex;
+                align-items: center;
+
+                i {
+                    margin-right: $spacing-xs;
+                }
+            }
+        }
+    }
+
+    .vacancy-excerpt {
+        color: $text-color;
+        margin-bottom: $spacing-lg;
+
+        p {
+            margin: 0;
+            line-height: 1.6;
+        }
+    }
+
+    .vacancy-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .rcwp-button {
+            display: inline-block;
+            padding: $spacing-sm $spacing-lg;
+            background: $primary-color;
+            color: #fff;
+            text-decoration: none;
+            border-radius: $border-radius;
+            transition: $transition-base;
+
+            &:hover {
+                background: darken($primary-color, 10%);
+            }
+        }
+    }
+}

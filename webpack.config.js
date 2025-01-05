@@ -1,14 +1,20 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 module.exports = {
     entry: {
-        blocks: './src/blocks.js',
-        frontend: './src/frontend.js'
+        'public': './src/js/public.js',
+        'admin': './src/js/admin.js',
+        'vacancy-search': './src/js/vacancy-search.js',
+        'application-form': './src/js/application-form.js',
+        'styles': './src/scss/main.scss'
     },
     output: {
-        path: path.resolve(__dirname, 'build'),
-        filename: '[name].js'
+        filename: 'js/[name].min.js',
+        path: path.resolve(__dirname, 'dist'),
+        clean: true
     },
     module: {
         rules: [
@@ -18,7 +24,7 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env', '@babel/preset-react']
+                        presets: ['@babel/preset-env']
                     }
                 }
             },
@@ -27,6 +33,16 @@ module.exports = {
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            postcssOptions: {
+                                plugins: [
+                                    'autoprefixer'
+                                ]
+                            }
+                        }
+                    },
                     'sass-loader'
                 ]
             }
@@ -34,15 +50,23 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: '[name].css'
+            filename: 'css/[name].min.css'
         })
     ],
+    optimization: {
+        minimizer: [
+            new TerserPlugin({
+                extractComments: false,
+            }),
+            new CssMinimizerPlugin()
+        ],
+        minimize: true
+    },
     externals: {
-        'react': 'React',
-        'react-dom': 'ReactDOM',
-        '@wordpress/blocks': 'wp.blocks',
-        '@wordpress/components': 'wp.components',
-        '@wordpress/element': 'wp.element',
-        '@wordpress/i18n': 'wp.i18n'
-    }
+        jquery: 'jQuery'
+    },
+    performance: {
+        hints: false
+    },
+    devtool: 'source-map'
 };

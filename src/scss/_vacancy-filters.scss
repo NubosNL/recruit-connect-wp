@@ -1,0 +1,94 @@
+.rcwp-filters {
+    background: #fff;
+    padding: $spacing-lg;
+    border-radius: $border-radius;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    .rcwp-search-bar {
+        margin-bottom: $spacing-lg;
+
+        input {
+            width: 100%;
+            padding: $spacing-sm;
+            border: 1px solid $border-color;
+            border-radius: $border-radius;
+            font-size: $font-size-base;
+            transition: $transition-base;
+
+            &:focus {
+                outline: none;
+                border-color: $primary-color;
+                box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+            }
+        }
+    }
+
+    .rcwp-filter-group {
+        margin-bottom: $spacing-lg;
+
+        h4 {
+            margin: 0 0 $spacing-sm;
+            color: $secondary-color;
+            font-size: 1em;
+        }
+
+        select {
+            width: 100%;
+            padding: $spacing-sm;
+            border: 1px solid $border-color;
+            border-radius: $border-radius;
+            background-color: #fff;
+            font-size: $font-size-base;
+            transition: $transition-base;
+
+            &:focus {
+                outline: none;
+                border-color: $primary-color;
+            }
+        }
+
+        .salary-slider {
+            margin: $spacing-md 0;
+
+            .ui-slider {
+                height: 4px;
+                background: $border-color;
+                border: none;
+                border-radius: 2px;
+
+                .ui-slider-range {
+                    background: $primary-color;
+                }
+
+                .ui-slider-handle {
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    background: #fff;
+                    border: 2px solid $primary-color;
+                    top: -6px;
+                    cursor: pointer;
+
+                    &:focus {
+                        outline: none;
+                    }
+                }
+            }
+        }
+
+        .salary-inputs {
+            display: flex;
+            gap: $spacing-sm;
+            margin-top: $spacing-sm;
+
+            input {
+                width: 50%;
+                padding: $spacing-xs;
+                border: 1px solid $border-color;
+                border-radius: $border-radius;
+                font-size: 0.9em;
+                text-align: center;
+            }
+        }
+    }
+}
