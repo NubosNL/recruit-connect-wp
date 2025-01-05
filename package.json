@@ -1,0 +1,29 @@
+{
+    "name": "recruit-connect-wp",
+    "version": "1.0.0",
+    "description": "WordPress plugin for job vacancy management",
+    "scripts": {
+        "build": "webpack --mode production",
+        "dev": "webpack --mode development --watch",
+        "lint": "eslint src/",
+        "lint:fix": "eslint src/ --fix"
+    },
+    "dependencies": {
+        "@wordpress/blocks": "^11.1.0",
+        "@wordpress/components": "^19.1.0",
+        "@wordpress/i18n": "^4.2.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.16.0",
+        "@babel/preset-env": "^7.16.0",
+        "@babel/preset-react": "^7.16.0",
+        "babel-loader": "^8.2.3",
+        "css-loader": "^6.5.1",
+        "eslint": "^8.2.0",
+        "mini-css-extract-plugin": "^2.4.4",
+        "sass": "^1.43.4",
+        "sass-loader": "^12.3.0",
+        "webpack": "^5.64.0",
+        "webpack-cli": "^4.9.1"
+    }
+}

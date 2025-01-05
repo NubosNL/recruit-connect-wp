@@ -1,0 +1,191 @@
+/* Main Layout */
+.rcwp-vacancies-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Search and Filters */
+.rcwp-search-filters {
+    flex: 0 0 25%;
+    background: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 4px;
+}
+
+.rcwp-search input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.rcwp-filter-group select {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Salary Range Slider */
+.rcwp-salary-range {
+    padding: 1rem 0;
+}
+
+.rcwp-salary-slider {
+    width: 100%;
+    margin: 1rem 0;
+}
+
+.rcwp-salary-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Vacancies List */
+.rcwp-vacancies-list {
+    flex: 0 0 70%;
+}
+
+.rcwp-vacancy-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.3s ease;
+}
+
+.rcwp-vacancy-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.rcwp-vacancy-title {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+}
+
+.rcwp-vacancy-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.rcwp-vacancy-excerpt {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.rcwp-vacancy-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.rcwp-vacancy-link:hover {
+    background: #0056b3;
+}
+
+/* Application Form */
+.rcwp-application-form {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.rcwp-form-row {
+    margin-bottom: 1.5rem;
+}
+
+.rcwp-form-row label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.rcwp-form-row input,
+.rcwp-form-row textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.rcwp-form-row textarea {
+    min-height: 150px;
+}
+
+.rcwp-submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.rcwp-submit-btn:hover {
+    background: #218838;
+}
+
+/* Detail Page */
+.rcwp-vacancy-detail {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.rcwp-vacancy-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.rcwp-main-content {
+    float: left;
+    width: 70%;
+    padding-right: 2rem;
+}
+
+.rcwp-sidebar {
+    float: right;
+    width: 30%;
+    padding: 1.5rem;
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .rcwp-search-filters,
+    .rcwp-vacancies-list,
+    .rcwp-main-content,
+    .rcwp-sidebar {
+        flex: 0 0 100%;
+        width: 100%;
+        float: none;
+    }
+
+    .rcwp-main-content {
+        padding-right: 0;
+        margin-bottom: 2rem;
+    }
+}
