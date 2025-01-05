@@ -47,58 +47,6 @@ class RCWP_Loader {
 	public function __construct() {
 		$this->actions = array();
 		$this->filters = array();
-
-		$this->load_dependencies();
-		$this->set_locale();
-		$this->define_admin_hooks();
-		$this->define_public_hooks();
-	}
-
-	/**
-	 * Load the required dependencies for this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function load_dependencies() {
-		// Include the license class
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-rcwp-license.php';
-
-		// Include the i18n class
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-rcwp-i18n.php';
-
-		// Include the admin class
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-rcwp-admin.php';
-
-		// Include the public class
-		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-rcwp-public.php';
-
-		// Include the XML importer class
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-rcwp-xml-importer.php';
-
-		// Include the post type class
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-rcwp-post-type.php';
-
-		// Include the application handler class
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-rcwp-application.php';
-
-		// Include the logger class
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-rcwp-logger.php';
-	}
-
-	/**
-	 * Register the filters and actions with WordPress.
-	 *
-	 * @since    1.0.0
-	 */
-	public function run() {
-		foreach ($this->filters as $hook) {
-			add_filter($hook['hook'], array($hook['component'], $hook['callback']), $hook['priority'], $hook['accepted_args']);
-		}
-
-		foreach ($this->actions as $hook) {
-			add_action($hook['hook'], array($hook['component'], $hook['callback']), $hook['priority'], $hook['accepted_args']);
-		}
 	}
 
 	/**
@@ -123,7 +71,7 @@ class RCWP_Loader {
 	 * @param    object    $component        A reference to the instance of the object on which the filter is defined.
 	 * @param    string    $callback         The name of the function definition on the $component.
 	 * @param    int       $priority         Optional. The priority at which the function should be fired. Default is 10.
-	 * @param    int       $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1
+	 * @param    int       $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 */
 	public function add_filter($hook, $component, $callback, $priority = 10, $accepted_args = 1) {
 		$this->filters = $this->add($this->filters, $hook, $component, $callback, $priority, $accepted_args);
@@ -156,55 +104,53 @@ class RCWP_Loader {
 	}
 
 	/**
-	 * Set the locale for this plugin for internationalization.
+	 * Register the filters and actions with WordPress.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
-	private function set_locale() {
-		$plugin_i18n = new RCWP_i18n();
-		$this->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
+	public function run() {
+		foreach ($this->filters as $hook) {
+			add_filter(
+				$hook['hook'],
+				array($hook['component'], $hook['callback']),
+				$hook['priority'],
+				$hook['accepted_args']
+			);
+		}
+
+		foreach ($this->actions as $hook) {
+			add_action(
+				$hook['hook'],
+				array($hook['component'], $hook['callback']),
+				$hook['priority'],
+				$hook['accepted_args']
+			);
+		}
 	}
 
 	/**
-	 * Register all of the hooks related to the admin area functionality
-	 * of the plugin.
+	 * Remove a registered action.
 	 *
 	 * @since    1.0.0
-	 * @access   private
+	 * @param    string    $hook             The name of the WordPress action that was registered.
+	 * @param    object    $component        A reference to the instance of the object on which the action was defined.
+	 * @param    string    $callback         The name of the function definition on the $component.
+	 * @param    int       $priority         Optional. The priority at which the function was registered. Default is 10.
 	 */
-	private function define_admin_hooks() {
-		$plugin_admin = new RCWP_Admin();
-
-		// Add admin menu
-		$this->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
-
-		// Add settings link to plugins page
-		$this->add_filter('plugin_action_links_' . RCWP_PLUGIN_BASENAME, $plugin_admin, 'add_action_links');
-
-		// Register settings
-		$this->add_action('admin_init', $plugin_admin, 'register_settings');
-
-		// Enqueue admin scripts and styles
-		$this->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
-		$this->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+	public function remove_action($hook, $component, $callback, $priority = 10) {
+		remove_action($hook, array($component, $callback), $priority);
 	}
 
 	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
+	 * Remove a registered filter.
 	 *
 	 * @since    1.0.0
-	 * @access   private
+	 * @param    string    $hook             The name of the WordPress filter that was registered.
+	 * @param    object    $component        A reference to the instance of the object on which the filter was defined.
+	 * @param    string    $callback         The name of the function definition on the $component.
+	 * @param    int       $priority         Optional. The priority at which the function was registered. Default is 10.
 	 */
-	private function define_public_hooks() {
-		$plugin_public = new RCWP_Public();
-
-		// Enqueue public scripts and styles
-		$this->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
-		$this->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
-
-		// Register shortcodes
-		$this->add_action('init', $plugin_public, 'register_shortcodes');
+	public function remove_filter($hook, $component, $callback, $priority = 10) {
+		remove_filter($hook, array($component, $callback), $priority);
 	}
 }
