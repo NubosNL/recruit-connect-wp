@@ -1,20 +1,14 @@
 <?php
-/**
- * Admin dashboard view
- *
- * @link       https://www.nubos.nl/en
- * @since      1.0.0
- *
- * @package    Recruit_Connect_WP
- */
-
-// If this file is called directly, abort.
-if (!defined('WPINC')) {
-    die;
-}
+if (!defined('ABSPATH')) exit;
 
 // Get statistics
-$stats = RCWP_Admin_Dashboard::get_statistics();
+$total_vacancies = wp_count_posts('vacancy')->publish;
+$recent_applications = get_posts(array(
+	'post_type' => 'vacancy',
+	'posts_per_page' => 5,
+	'orderby' => 'date',
+	'order' => 'DESC'
+));
 ?>
 
 <div class="wrap">
@@ -25,91 +19,52 @@ $stats = RCWP_Admin_Dashboard::get_statistics();
         <div class="rcwp-stats-grid">
             <div class="rcwp-stat-card">
                 <h3><?php _e('Total Vacancies', 'recruit-connect-wp'); ?></h3>
-                <div class="stat-number"><?php echo esc_html($stats['total_vacancies']); ?></div>
+                <div class="stat-number"><?php echo esc_html($total_vacancies); ?></div>
             </div>
-            <div class="rcwp-stat-card">
-                <h3><?php _e('Active Vacancies', 'recruit-connect-wp'); ?></h3>
-                <div class="stat-number"><?php echo esc_html($stats['active_vacancies']); ?></div>
-            </div>
-            <div class="rcwp-stat-card">
-                <h3><?php _e('Applications (30 days)', 'recruit-connect-wp'); ?></h3>
-                <div class="stat-number"><?php echo esc_html($stats['recent_applications']); ?></div>
-            </div>
-            <div class="rcwp-stat-card">
-                <h3><?php _e('Last Sync', 'recruit-connect-wp'); ?></h3>
-                <div class="stat-number"><?php echo esc_html($stats['last_sync']); ?></div>
-            </div>
+            <!-- Add more stat cards as needed -->
         </div>
 
-        <!-- Recent Applications -->
+        <!-- Recent Vacancies -->
         <div class="rcwp-dashboard-section">
-            <h2><?php _e('Recent Applications', 'recruit-connect-wp'); ?></h2>
-            <table class="wp-list-table widefat fixed striped">
-                <thead>
+            <h2><?php _e('Recent Vacancies', 'recruit-connect-wp'); ?></h2>
+			<?php if ($recent_applications): ?>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
                     <tr>
+                        <th><?php _e('Title', 'recruit-connect-wp'); ?></th>
                         <th><?php _e('Date', 'recruit-connect-wp'); ?></th>
-                        <th><?php _e('Applicant', 'recruit-connect-wp'); ?></th>
-                        <th><?php _e('Vacancy', 'recruit-connect-wp'); ?></th>
                         <th><?php _e('Status', 'recruit-connect-wp'); ?></th>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($stats['recent_applications_list'] as $application) : ?>
+                    </thead>
+                    <tbody>
+					<?php foreach ($recent_applications as $vacancy): ?>
                         <tr>
-                            <td><?php echo esc_html($application->created_at); ?></td>
-                            <td><?php echo esc_html($application->applicant_name); ?></td>
-                            <td><?php echo esc_html($application->vacancy_title); ?></td>
-                            <td><?php echo esc_html($application->status); ?></td>
+                            <td>
+                                <a href="<?php echo get_edit_post_link($vacancy->ID); ?>">
+									<?php echo esc_html($vacancy->post_title); ?>
+                                </a>
+                            </td>
+                            <td><?php echo get_the_date('', $vacancy->ID); ?></td>
+                            <td><?php echo get_post_status($vacancy->ID); ?></td>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+					<?php endforeach; ?>
+                    </tbody>
+                </table>
+			<?php else: ?>
+                <p><?php _e('No vacancies found.', 'recruit-connect-wp'); ?></p>
+			<?php endif; ?>
         </div>
 
-        <!-- System Status -->
+        <!-- Quick Actions -->
         <div class="rcwp-dashboard-section">
-            <h2><?php _e('System Status', 'recruit-connect-wp'); ?></h2>
-            <table class="wp-list-table widefat fixed striped">
-                <tbody>
-                    <tr>
-                        <td><?php _e('XML Feed Status', 'recruit-connect-wp'); ?></td>
-                        <td>
-                            <?php if ($stats['xml_feed_status']) : ?>
-                                <span class="status-ok"><?php _e('Connected', 'recruit-connect-wp'); ?></span>
-                            <?php else : ?>
-                                <span class="status-error"><?php _e('Error', 'recruit-connect-wp'); ?></span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><?php _e('License Status', 'recruit-connect-wp'); ?></td>
-                        <td>
-                            <?php if ($stats['license_status']) : ?>
-                                <span class="status-ok"><?php _e('Active', 'recruit-connect-wp'); ?></span>
-                            <?php else : ?>
-                                <span class="status-error"><?php _e('Inactive', 'recruit-connect-wp'); ?></span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><?php _e('Next Scheduled Sync', 'recruit-connect-wp'); ?></td>
-                        <td><?php echo esc_html($stats['next_sync']); ?></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Recent Logs -->
-        <div class="rcwp-dashboard-section">
-            <h2><?php _e('Recent Logs', 'recruit-connect-wp'); ?></h2>
-            <div class="rcwp-logs-wrapper">
-                <?php foreach ($stats['recent_logs'] as $log) : ?>
-                    <div class="log-entry <?php echo esc_attr($log->level); ?>">
-                        <span class="log-time"><?php echo esc_html($log->created_at); ?></span>
-                        <span class="log-level"><?php echo esc_html(ucfirst($log->level)); ?></span>
-                        <span class="log-message"><?php echo esc_html($log->message); ?></span>
-                    </div>
-                <?php endforeach; ?>
+            <h2><?php _e('Quick Actions', 'recruit-connect-wp'); ?></h2>
+            <div class="rcwp-quick-actions">
+                <a href="<?php echo admin_url('admin.php?page=recruit-connect-wp-settings'); ?>" class="button button-primary">
+					<?php _e('Configure Settings', 'recruit-connect-wp'); ?>
+                </a>
+                <a href="#" class="button" id="rcwp-sync-now">
+					<?php _e('Sync Vacancies', 'recruit-connect-wp'); ?>
+                </a>
             </div>
         </div>
     </div>

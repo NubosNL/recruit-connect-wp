@@ -1,94 +1,93 @@
 <?php
 class RCWP_Admin {
-    private $logger;
-    private $settings;
+	private $logger;
+	private $plugin_name;
+	private $version;
 
-    public function __construct($logger) {
-        $this->logger = $logger;
-        $this->settings = new RCWP_Settings();
+	public function __construct($logger) {
+		$this->logger = $logger;
+		$this->plugin_name = 'recruit-connect-wp';
+		$this->version = RCWP_VERSION;
+	}
 
-        add_action('admin_menu', array($this, 'add_admin_menu'));
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
-        add_action('admin_init', array($this, 'init_admin'));
-    }
+	public function add_admin_menu() {
+		add_menu_page(
+			__('Recruit Connect', 'recruit-connect-wp'),
+			__('Recruit Connect', 'recruit-connect-wp'),
+			'manage_options',
+			'recruit-connect-wp',
+			array($this, 'display_plugin_admin_page'),
+			'dashicons-businessman',
+			30
+		);
 
-    public function add_admin_menu() {
-        add_menu_page(
-            __('Recruit Connect', 'recruit-connect-wp'),
-            __('Recruit Connect', 'recruit-connect-wp'),
-            'manage_options',
-            'recruit-connect-wp',
-            array($this->settings, 'render_settings_page'),
-            'dashicons-businessman',
-            30
-        );
+		// Add submenu pages
+		add_submenu_page(
+			'recruit-connect-wp',
+			__('Dashboard', 'recruit-connect-wp'),
+			__('Dashboard', 'recruit-connect-wp'),
+			'manage_options',
+			'recruit-connect-wp',
+			array($this, 'display_plugin_admin_page')
+		);
 
-        add_submenu_page(
-            'recruit-connect-wp',
-            __('Settings', 'recruit-connect-wp'),
-            __('Settings', 'recruit-connect-wp'),
-            'manage_options',
-            'recruit-connect-wp'
-        );
+		add_submenu_page(
+			'recruit-connect-wp',
+			__('Settings', 'recruit-connect-wp'),
+			__('Settings', 'recruit-connect-wp'),
+			'manage_options',
+			'recruit-connect-wp-settings',
+			array($this, 'display_plugin_settings_page')
+		);
+	}
 
-        add_submenu_page(
-            'recruit-connect-wp',
-            __('Logs', 'recruit-connect-wp'),
-            __('Logs', 'recruit-connect-wp'),
-            'manage_options',
-            'recruit-connect-wp-logs',
-            array($this, 'render_logs_page')
-        );
-    }
+	public function display_plugin_admin_page() {
+		// Ensure the file exists before including it
+		$template_path = RCWP_PLUGIN_DIR . 'admin/views/dashboard.php';
+		if (file_exists($template_path)) {
+			include_once $template_path;
+		} else {
+			$this->logger->error('Admin dashboard template not found: ' . $template_path);
+			echo '<div class="wrap"><h1>' . __('Dashboard', 'recruit-connect-wp') . '</h1>';
+			echo '<div class="notice notice-error"><p>' . __('Error: Dashboard template not found.', 'recruit-connect-wp') . '</p></div></div>';
+		}
+	}
 
-    public function enqueue_admin_assets($hook) {
-        if (strpos($hook, 'recruit-connect-wp') === false) {
-            return;
-        }
+	public function display_plugin_settings_page() {
+		// Ensure the file exists before including it
+		$template_path = RCWP_PLUGIN_DIR . 'admin/views/settings.php';
+		if (file_exists($template_path)) {
+			include_once $template_path;
+		} else {
+			$this->logger->error('Admin settings template not found: ' . $template_path);
+			echo '<div class="wrap"><h1>' . __('Settings', 'recruit-connect-wp') . '</h1>';
+			echo '<div class="notice notice-error"><p>' . __('Error: Settings template not found.', 'recruit-connect-wp') . '</p></div></div>';
+		}
+	}
 
-        wp_enqueue_style(
-            'rcwp-admin-css',
-            RCWP_PLUGIN_URL . 'admin/css/admin.css',
-            array(),
-            RCWP_VERSION
-        );
+	public function enqueue_styles() {
+		wp_enqueue_style(
+			$this->plugin_name,
+			RCWP_PLUGIN_URL . 'admin/css/admin.css',
+			array(),
+			$this->version,
+			'all'
+		);
+	}
 
-        wp_enqueue_script(
-            'rcwp-admin-js',
-            RCWP_PLUGIN_URL . 'admin/js/admin.js',
-            array('jquery', 'jquery-ui-sortable'),
-            RCWP_VERSION,
-            true
-        );
+	public function enqueue_scripts() {
+		wp_enqueue_script(
+			$this->plugin_name,
+			RCWP_PLUGIN_URL . 'admin/js/admin.js',
+			array('jquery'),
+			$this->version,
+			false
+		);
 
-        wp_localize_script('rcwp-admin-js', 'rcwpAdmin', array(
-            'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('rcwp-admin-nonce'),
-            'strings' => array(
-                'syncSuccess' => __('Sync completed successfully!', 'recruit-connect-wp'),
-                'syncError' => __('Error during sync. Please check logs.', 'recruit-connect-wp')
-            )
-        ));
-    }
-
-    public function init_admin() {
-        // Register settings
-        register_setting('rcwp_general_settings', 'rcwp_xml_url');
-        register_setting('rcwp_general_settings', 'rcwp_application_url');
-        register_setting('rcwp_general_settings', 'rcwp_detail_url_param');
-        register_setting('rcwp_general_settings', 'rcwp_enable_detail_page');
-        register_setting('rcwp_general_settings', 'rcwp_search_components');
-
-        // Application form settings
-        register_setting('rcwp_application_settings', 'rcwp_thank_you_message');
-        register_setting('rcwp_application_settings', 'rcwp_required_fields');
-
-        // Sync settings
-        register_setting('rcwp_sync_settings', 'rcwp_sync_frequency');
-    }
-
-    public function render_logs_page() {
-        $logs = $this->logger->get_logs();
-        include RCWP_PLUGIN_DIR . 'admin/views/logs-page.php';
-    }
+		// Add localization for admin scripts
+		wp_localize_script($this->plugin_name, 'rcwp_admin', array(
+			'ajax_url' => admin_url('admin-ajax.php'),
+			'nonce' => wp_create_nonce('rcwp_admin_nonce')
+		));
+	}
 }

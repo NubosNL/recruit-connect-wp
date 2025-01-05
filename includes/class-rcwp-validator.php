@@ -3,6 +3,10 @@ class RCWP_Validator {
     private $errors = array();
     private $data = array();
     private $rules = array();
+	private $logger;
+	public function __construct($logger) {
+		$this->logger = $logger;
+	}
 
     /**
      * Set validation rules

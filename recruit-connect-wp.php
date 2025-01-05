@@ -77,21 +77,30 @@ class Recruit_Connect_WP {
 	 * Load the required dependencies.
 	 */
 	private function load_dependencies() {
-		// Core classes
+		// Load core framework classes first
+		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-loader.php';
+		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-i18n.php';
+		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-logger.php';
+		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-settings.php';
+
+		// Initialize core framework components
+		$this->loader = new RCWP_Loader();
+		$this->i18n = new RCWP_i18n();
+		$this->logger = new RCWP_Logger();
+		$this->settings = new RCWP_Settings();
+
+		// Load all other classes
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-activator.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-deactivator.php';
-		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-i18n.php';
-		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-loader.php';
+		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-security.php';
+		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-cache.php';
+		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-validator.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-post-type.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-xml-importer.php';
-		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-logger.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-application.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-application-handler.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-frontend.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-search.php';
-		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-cache.php';
-		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-security.php';
-		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-validator.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-mailer.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-notifications.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-performance.php';
@@ -105,36 +114,32 @@ class Recruit_Connect_WP {
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-data-export.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-backup.php';
 		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-updater.php';
-		require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-license.php';
 
-		// Initialize core components in the correct order with dependencies
-		$this->loader = new RCWP_Loader();
-		$this->i18n = new RCWP_i18n();
-		$this->logger = new RCWP_Logger(); // Initialize logger first as it's a dependency
-
-// Components that need the logger
+		// Initialize components that need logger
 		$this->security = new RCWP_Security($this->logger);
 		$this->cache = new RCWP_Cache($this->logger);
 		$this->validator = new RCWP_Validator($this->logger);
-		$this->post_type = new RCWP_Post_Type();
 		$this->xml_importer = new RCWP_XML_Importer($this->logger);
 		$this->application_handler = new RCWP_Application_Handler($this->logger);
 		$this->mailer = new RCWP_Mailer($this->logger);
-		$this->notifications = new RCWP_Notifications($this->logger);
 		$this->monitor = new RCWP_Monitor($this->logger);
+		$this->notifications = new RCWP_Notifications($this->logger);
+		$this->performance = new RCWP_Performance($this->logger); // Moved here
+
+		// Initialize components that need both logger and settings
+		$this->api = new RCWP_API($this->logger, $this->settings);
+		$this->rest_api = new RCWP_REST_API($this->logger, $this->settings);
+
+		// Initialize components without logger dependency
+		$this->post_type = new RCWP_Post_Type();
 		$this->blocks = new RCWP_Blocks();
 		$this->frontend = new RCWP_Frontend();
-		$this->api = new RCWP_API($this->logger);
-		$this->rest_api = new RCWP_Rest_API($this->logger);
 
-// Admin classes
+		// Admin classes
 		if (is_admin()) {
 			require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-admin.php';
-			require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-admin-dashboard.php';
-			require_once RCWP_PLUGIN_DIR . 'includes/class-rcwp-settings.php';
 
 			$this->admin = new RCWP_Admin($this->logger);
-			$this->admin_dashboard = new RCWP_Admin_Dashboard($this->logger);
 		}
 	}
 
@@ -149,16 +154,14 @@ class Recruit_Connect_WP {
 		add_action('init', array($this, 'load_textdomain'));
 
 		// Register hooks with the loader
-		$this->loader->add_action('init', $this->post_type, 'register_post_type');
 		$this->loader->add_action('rcwp_xml_import_cron', $this->xml_importer, 'import_vacancies');
-		$this->loader->add_action('wp_enqueue_scripts', $this->frontend, 'enqueue_scripts');
-		$this->loader->add_action('wp_enqueue_scripts', $this->frontend, 'enqueue_styles');
 
 		if (is_admin()) {
 			$this->loader->add_action('admin_enqueue_scripts', $this->admin, 'enqueue_scripts');
 			$this->loader->add_action('admin_enqueue_scripts', $this->admin, 'enqueue_styles');
 			$this->loader->add_action('admin_menu', $this->admin, 'add_admin_menu');
-			$this->loader->add_action('admin_init', $this->admin, 'register_settings');
+			// Remove this line as we'll handle it in the constructor
+			// $this->loader->add_action('admin_init', $this->admin, 'register_settings');
 		}
 	}
 
