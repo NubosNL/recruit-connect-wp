@@ -104,68 +104,151 @@ class RCWP_Admin {
 	 * @since    1.0.0
 	 */
 	public function register_plugin_settings() {
-		// General Settings
-		register_setting(
-			'rcwp_general_settings', // Option group
-			'rcwp_xml_url'          // Option name
-		);
-		register_setting(
-			'rcwp_general_settings',
-			'rcwp_application_url'
-		);
-		register_setting(
-			'rcwp_general_settings',
-			'rcwp_vacancy_url_parameter'
-		);
-		register_setting(
-			'rcwp_general_settings',
-			'rcwp_enable_detail_page'
-		);
-		register_setting(
-			'rcwp_general_settings',
-			'rcwp_search_components'
-		);
+		// Register the main settings
+		register_setting('rcwp_settings', 'rcwp_settings');
 
-		// Application Form Settings
-		register_setting(
-			'rcwp_application_settings',
-			'rcwp_thank_you_message'
-		);
-		register_setting(
-			'rcwp_application_settings',
-			'rcwp_required_fields'
-		);
-
-		// Sync Settings
-		register_setting(
-			'rcwp_sync_settings',
-			'rcwp_sync_frequency'
-		);
-
-		// Add settings sections
+		// General Settings Section
 		add_settings_section(
 			'rcwp_general_section',
 			__('General Settings', 'recruit-connect-wp'),
 			array($this, 'render_general_section'),
-			'rcwp_general_settings'
+			'rcwp-settings-general'
 		);
 
+		// Application Settings Section
 		add_settings_section(
 			'rcwp_application_section',
 			__('Application Form Settings', 'recruit-connect-wp'),
 			array($this, 'render_application_section'),
-			'rcwp_application_settings'
+			'rcwp-settings-application'
 		);
 
+		// Sync Settings Section
 		add_settings_section(
 			'rcwp_sync_section',
 			__('Synchronization Settings', 'recruit-connect-wp'),
 			array($this, 'render_sync_section'),
-			'rcwp_sync_settings'
+			'rcwp-settings-sync'
 		);
 
-		// Add settings fields
-		$this->add_settings_fields();
+		// General Settings Fields
+		add_settings_field(
+			'rcwp_xml_url',
+			__('XML Feed URL', 'recruit-connect-wp'),
+			array($this, 'render_text_field'),
+			'rcwp-settings-general',
+			'rcwp_general_section',
+			array('name' => 'rcwp_settings[xml_url]')
+		);
+
+		add_settings_field(
+			'rcwp_application_url',
+			__('Application Handler URL', 'recruit-connect-wp'),
+			array($this, 'render_text_field'),
+			'rcwp-settings-general',
+			'rcwp_general_section',
+			array('name' => 'rcwp_settings[application_url]')
+		);
+
+		// Application Settings Fields
+		add_settings_field(
+			'rcwp_thank_you_message',
+			__('Thank You Message', 'recruit-connect-wp'),
+			array($this, 'render_textarea_field'),
+			'rcwp-settings-application',
+			'rcwp_application_section',
+			array('name' => 'rcwp_settings[thank_you_message]')
+		);
+
+		add_settings_field(
+			'rcwp_required_fields',
+			__('Required Fields', 'recruit-connect-wp'),
+			array($this, 'render_checkboxes_field'),
+			'rcwp-settings-application',
+			'rcwp_application_section',
+			array(
+				'name' => 'rcwp_settings[required_fields]',
+				'options' => array(
+					'first_name' => __('First Name', 'recruit-connect-wp'),
+					'last_name' => __('Last Name', 'recruit-connect-wp'),
+					'email' => __('Email', 'recruit-connect-wp'),
+					'phone' => __('Phone', 'recruit-connect-wp'),
+					'motivation' => __('Motivation', 'recruit-connect-wp'),
+					'resume' => __('Resume', 'recruit-connect-wp')
+				)
+			)
+		);
+
+		// Sync Settings Fields
+		add_settings_field(
+			'rcwp_sync_frequency',
+			__('Sync Frequency', 'recruit-connect-wp'),
+			array($this, 'render_select_field'),
+			'rcwp-settings-sync',
+			'rcwp_sync_section',
+			array(
+				'name' => 'rcwp_settings[sync_frequency]',
+				'options' => array(
+					'hourly' => __('Hourly', 'recruit-connect-wp'),
+					'twicedaily' => __('Twice Daily', 'recruit-connect-wp'),
+					'daily' => __('Daily', 'recruit-connect-wp')
+				)
+			)
+		);
+	}
+
+	public function render_text_field($args) {
+		$options = get_option('rcwp_settings');
+		$name = $args['name'];
+		$field_key = str_replace('rcwp_settings[', '', str_replace(']', '', $name));
+		$value = isset($options[$field_key]) ? $options[$field_key] : '';
+		echo '<input type="text" class="regular-text" name="' . esc_attr($name) . '" value="' . esc_attr($value) . '">';
+	}
+
+	public function render_checkbox_field($args) {
+		$options = get_option('rcwp_settings');
+		$name = $args['name'];
+		$field_key = str_replace('rcwp_settings[', '', str_replace(']', '', $name));
+		$value = isset($options[$field_key]) ? $options[$field_key] : '';
+		echo '<input type="checkbox" name="' . esc_attr($name) . '" value="1" ' . checked(1, $value, false) . '>';
+	}
+
+	public function render_checkboxes_field($args) {
+		$options = get_option('rcwp_settings');
+		$name = $args['name'];
+		$field_key = str_replace('rcwp_settings[', '', str_replace(']', '', $name));
+		$values = isset($options[$field_key]) ? $options[$field_key] : array();
+
+		foreach ($args['options'] as $key => $label) {
+			$checked = isset($values[$key]) ? checked(1, $values[$key], false) : '';
+			echo '<label style="display:block;margin-bottom:5px;">';
+			echo '<input type="checkbox" name="' . esc_attr($name) . '[' . esc_attr($key) . ']" value="1" ' . $checked . '> ';
+			echo esc_html($label);
+			echo '</label>';
+		}
+	}
+
+	public function render_select_field($args) {
+		$options = get_option('rcwp_settings');
+		$name = $args['name'];
+		$field_key = str_replace('rcwp_settings[', '', str_replace(']', '', $name));
+		$value = isset($options[$field_key]) ? $options[$field_key] : '';
+
+		echo '<select name="' . esc_attr($name) . '">';
+		foreach ($args['options'] as $key => $label) {
+			echo '<option value="' . esc_attr($key) . '" ' . selected($key, $value, false) . '>';
+			echo esc_html($label);
+			echo '</option>';
+		}
+		echo '</select>';
+	}
+
+	public function render_textarea_field($args) {
+		$options = get_option('rcwp_settings');
+		$name = $args['name'];
+		$field_key = str_replace('rcwp_settings[', '', str_replace(']', '', $name));
+		$value = isset($options[$field_key]) ? $options[$field_key] : '';
+		echo '<textarea class="large-text" rows="5" name="' . esc_attr($name) . '">' . esc_textarea($value) . '</textarea>';
 	}
 
 	/**
@@ -233,35 +316,6 @@ class RCWP_Admin {
 
 	public function render_sync_section() {
 		echo '<p>' . esc_html__('Configure synchronization settings for vacancy imports.', 'recruit-connect-wp') . '</p>';
-	}
-
-	/**
-	 * Field renderers
-	 */
-	public function render_text_field($args) {
-		$name = $args['name'];
-		$value = get_option($name);
-		echo '<input type="text" class="regular-text" name="' . esc_attr($name) . '" value="' . esc_attr($value) . '">';
-	}
-
-	public function render_checkbox_field($args) {
-		$name = $args['name'];
-		$value = get_option($name);
-		echo '<input type="checkbox" name="' . esc_attr($name) . '" value="1" ' . checked(1, $value, false) . '>';
-	}
-
-	public function render_select_field($args) {
-		$name = $args['name'];
-		$options = $args['options'];
-		$value = get_option($name);
-
-		echo '<select name="' . esc_attr($name) . '">';
-		foreach ($options as $key => $label) {
-			echo '<option value="' . esc_attr($key) . '" ' . selected($key, $value, false) . '>';
-			echo esc_html($label);
-			echo '</option>';
-		}
-		echo '</select>';
 	}
 
 	/**
