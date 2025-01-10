@@ -1,71 +1,73 @@
 <?php
-if (!defined('ABSPATH')) exit;
-
-// Get statistics
-$total_vacancies = wp_count_posts('vacancy')->publish;
-$recent_applications = get_posts(array(
-	'post_type' => 'vacancy',
-	'posts_per_page' => 5,
-	'orderby' => 'date',
-	'order' => 'DESC'
-));
+// Ensure $stats is available
+if (!isset($stats)) {
+	$stats = array(
+		'total_vacancies' => 0,
+		'total_applications' => 0,
+		'last_import' => ''
+	);
+}
 ?>
-
 <div class="wrap">
-    <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+    <h1><?php echo esc_html__('Recruit Connect Dashboard', 'recruit-connect-wp'); ?></h1>
 
-    <div class="rcwp-dashboard-wrapper">
-        <!-- Statistics Cards -->
-        <div class="rcwp-stats-grid">
-            <div class="rcwp-stat-card">
-                <h3><?php _e('Total Vacancies', 'recruit-connect-wp'); ?></h3>
-                <div class="stat-number"><?php echo esc_html($total_vacancies); ?></div>
-            </div>
-            <!-- Add more stat cards as needed -->
-        </div>
+    <div class="recruit-connect-dashboard">
+        <div class="dashboard-widget">
+            <h2><?php echo esc_html__('Statistics', 'recruit-connect-wp'); ?></h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-label"><?php echo esc_html__('Total Vacancies', 'recruit-connect-wp'); ?></span>
+                    <span class="stat-value"><?php echo esc_html($stats['total_vacancies']); ?></span>
+                </div>
 
-        <!-- Recent Vacancies -->
-        <div class="rcwp-dashboard-section">
-            <h2><?php _e('Recent Vacancies', 'recruit-connect-wp'); ?></h2>
-			<?php if ($recent_applications): ?>
-                <table class="wp-list-table widefat fixed striped">
-                    <thead>
-                    <tr>
-                        <th><?php _e('Title', 'recruit-connect-wp'); ?></th>
-                        <th><?php _e('Date', 'recruit-connect-wp'); ?></th>
-                        <th><?php _e('Status', 'recruit-connect-wp'); ?></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-					<?php foreach ($recent_applications as $vacancy): ?>
-                        <tr>
-                            <td>
-                                <a href="<?php echo get_edit_post_link($vacancy->ID); ?>">
-									<?php echo esc_html($vacancy->post_title); ?>
-                                </a>
-                            </td>
-                            <td><?php echo get_the_date('', $vacancy->ID); ?></td>
-                            <td><?php echo get_post_status($vacancy->ID); ?></td>
-                        </tr>
-					<?php endforeach; ?>
-                    </tbody>
-                </table>
-			<?php else: ?>
-                <p><?php _e('No vacancies found.', 'recruit-connect-wp'); ?></p>
-			<?php endif; ?>
-        </div>
+                <div class="stat-box">
+                    <span class="stat-label"><?php echo esc_html__('Total Applications', 'recruit-connect-wp'); ?></span>
+                    <span class="stat-value"><?php echo esc_html($stats['total_applications']); ?></span>
+                </div>
 
-        <!-- Quick Actions -->
-        <div class="rcwp-dashboard-section">
-            <h2><?php _e('Quick Actions', 'recruit-connect-wp'); ?></h2>
-            <div class="rcwp-quick-actions">
-                <a href="<?php echo admin_url('admin.php?page=recruit-connect-wp-settings'); ?>" class="button button-primary">
-					<?php _e('Configure Settings', 'recruit-connect-wp'); ?>
-                </a>
-                <a href="#" class="button" id="rcwp-sync-now">
-					<?php _e('Sync Vacancies', 'recruit-connect-wp'); ?>
-                </a>
+                <div class="stat-box">
+                    <span class="stat-label"><?php echo esc_html__('Last Import', 'recruit-connect-wp'); ?></span>
+                    <span class="stat-value">
+                        <?php
+                        if (!empty($stats['last_import'])) {
+	                        echo esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($stats['last_import'])));
+                        } else {
+	                        echo esc_html__('Never', 'recruit-connect-wp');
+                        }
+                        ?>
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .stat-box {
+        background: #fff;
+        padding: 20px;
+        border: 1px solid #ccd0d4;
+        border-radius: 4px;
+        text-align: center;
+    }
+
+    .stat-label {
+        display: block;
+        color: #646970;
+        margin-bottom: 10px;
+    }
+
+    .stat-value {
+        display: block;
+        font-size: 24px;
+        font-weight: bold;
+        color: #1d2327;
+    }
+</style>

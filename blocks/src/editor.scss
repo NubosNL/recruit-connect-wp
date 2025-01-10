@@ -1,0 +1,31 @@
+.wp-block-recruit-connect-vacancy-field {
+  padding: 1em;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+
+  .vacancy-field-preview {
+    min-height: 40px;
+  }
+
+  .field-label {
+    font-weight: bold;
+    margin-right: 0.5em;
+  }
+
+  .field-value {
+    color: #666;
+  }
+
+  img.recruiter-image {
+    max-width: 100px;
+    height: auto;
+    border-radius: 50%;
+    display: block;
+    margin-top: 0.5em;
+  }
+
+  &.is-selected {
+    border-color: #007cba;
+  }
+}

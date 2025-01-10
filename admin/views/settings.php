@@ -1,33 +1,90 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+	exit;
+}
+
+// Ensure $active_tab is set
+if (!isset($active_tab)) {
+	$active_tab = 'general';
+}
 ?>
 <div class="wrap">
-    <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+    <h1><?php echo esc_html__('Recruit Connect Settings', 'recruit-connect-wp'); ?></h1>
+
+    <h2 class="nav-tab-wrapper">
+        <a href="?page=recruit-connect-settings&tab=general"
+           class="nav-tab <?php echo $active_tab == 'general' ? 'nav-tab-active' : ''; ?>">
+			<?php echo esc_html__('General', 'recruit-connect-wp'); ?>
+        </a>
+        <a href="?page=recruit-connect-settings&tab=application"
+           class="nav-tab <?php echo $active_tab == 'application' ? 'nav-tab-active' : ''; ?>">
+			<?php echo esc_html__('Application Form', 'recruit-connect-wp'); ?>
+        </a>
+        <a href="?page=recruit-connect-settings&tab=sync"
+           class="nav-tab <?php echo $active_tab == 'sync' ? 'nav-tab-active' : ''; ?>">
+			<?php echo esc_html__('Synchronization', 'recruit-connect-wp'); ?>
+        </a>
+        <a href="?page=recruit-connect-settings&tab=detail"
+           class="nav-tab <?php echo $active_tab == 'detail' ? 'nav-tab-active' : ''; ?>">
+			<?php echo esc_html__('Detail Page', 'recruit-connect-wp'); ?>
+        </a>
+        <a href="?page=recruit-connect-settings&tab=logs"
+           class="nav-tab <?php echo $active_tab == 'logs' ? 'nav-tab-active' : ''; ?>">
+			<?php echo esc_html__('Logs', 'recruit-connect-wp'); ?>
+        </a>
+    </h2>
 
     <form method="post" action="options.php">
-		<?php settings_fields('rcwp_settings'); ?>
+		<?php
+		// Output all settings fields that need to be preserved
+		$all_settings = array(
+			'recruit_connect_xml_url',
+			'recruit_connect_application_url',
+			'recruit_connect_detail_param',
+			'recruit_connect_enable_detail',
+			'recruit_connect_search_components',
+			'recruit_connect_thank_you_message',
+			'recruit_connect_required_fields',
+			'recruit_connect_sync_frequency',
+			'recruit_connect_detail_fields',
+			'recruit_connect_fields_order'
+		);
 
-        <h2 class="nav-tab-wrapper">
-            <a href="#general" class="nav-tab nav-tab-active"><?php _e('General', 'recruit-connect-wp'); ?></a>
-            <a href="#application" class="nav-tab"><?php _e('Application Form', 'recruit-connect-wp'); ?></a>
-            <a href="#sync" class="nav-tab"><?php _e('Synchronization', 'recruit-connect-wp'); ?></a>
-        </h2>
+		// Add hidden fields for all settings to preserve their values
+		foreach ($all_settings as $setting) {
+			$value = get_option($setting);
+			if (is_array($value)) {
+				foreach ($value as $val) {
+					echo '<input type="hidden" name="' . esc_attr($setting) . '[]" value="' . esc_attr($val) . '">';
+				}
+			} else {
+				echo '<input type="hidden" name="' . esc_attr($setting) . '" value="' . esc_attr($value) . '">';
+			}
+		}
 
-        <!-- General Settings -->
-        <div id="general" class="tab-content">
-			<?php do_settings_sections('rcwp-settings-general'); ?>
-        </div>
+		settings_fields('recruit_connect_settings');
 
-        <!-- Application Form Settings -->
-        <div id="application" class="tab-content" style="display: none;">
-			<?php do_settings_sections('rcwp-settings-application'); ?>
-        </div>
+		switch($active_tab) {
+			case 'general':
+				require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/settings/general.php';
+				break;
+			case 'application':
+				require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/settings/application.php';
+				break;
+			case 'sync':
+				require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/settings/sync.php';
+				break;
+			case 'detail':
+				require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/settings/detail.php';
+				break;
+			case 'logs':
+				require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/settings/logs.php';
+				break;
+		}
 
-        <!-- Sync Settings -->
-        <div id="sync" class="tab-content" style="display: none;">
-			<?php do_settings_sections('rcwp-settings-sync'); ?>
-        </div>
-
-		<?php submit_button(); ?>
+		if ($active_tab !== 'logs') {
+			submit_button();
+		}
+		?>
     </form>
 </div>

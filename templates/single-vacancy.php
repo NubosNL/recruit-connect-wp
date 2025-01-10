@@ -1,153 +1,174 @@
 <?php
 /**
- * The template for displaying single vacancy
- *
- * @link       https://www.nubos.nl/en
- * @since      1.0.0
- *
- * @package    Recruit_Connect_WP
+ * Template for displaying single vacancy
  */
 
 get_header();
 
-// Get enabled detail page fields and their order
-$detail_fields = get_option('rcwp_detail_page_fields', array());
-?>
+while (have_posts()) :
+	the_post();
 
-    <article id="vacancy-<?php the_ID(); ?>" <?php post_class('rcwp-single-vacancy'); ?>>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <!-- Main Content -->
-                    <div class="vacancy-main-content">
-                        <header class="vacancy-header">
-							<?php if (!empty($detail_fields['title'])) : ?>
-                                <h1 class="vacancy-title"><?php the_title(); ?></h1>
-							<?php endif; ?>
+	// Get all vacancy meta data
+	$meta_fields = array(
+		'company' => array(
+			'label' => __('Company', 'recruit-connect-wp'),
+			'icon' => 'building'
+		),
+		'city' => array(
+			'label' => __('Location', 'recruit-connect-wp'),
+			'icon' => 'location'
+		),
+		'salary' => array(
+			'label' => __('Salary', 'recruit-connect-wp'),
+			'icon' => 'money'
+		),
+		'education' => array(
+			'label' => __('Education', 'recruit-connect-wp'),
+			'icon' => 'graduation-cap'
+		),
+		'jobtype' => array(
+			'label' => __('Job Type', 'recruit-connect-wp'),
+			'icon' => 'briefcase'
+		),
+		'experience' => array(
+			'label' => __('Experience', 'recruit-connect-wp'),
+			'icon' => 'clock'
+		)
+	);
+	?>
 
-                            <div class="vacancy-meta">
-								<?php if (!empty($detail_fields['company'])) : ?>
-									<?php $company = get_post_meta(get_the_ID(), '_vacancy_company', true); ?>
-									<?php if ($company) : ?>
-                                        <div class="meta-item company">
-                                            <i class="fas fa-building"></i>
-                                            <span><?php echo esc_html($company); ?></span>
-                                        </div>
-									<?php endif; ?>
-								<?php endif; ?>
+    <div class="recruit-connect-vacancy-detail">
+        <div class="vacancy-header">
+            <h1><?php the_title(); ?></h1>
 
-								<?php if (!empty($detail_fields['location'])) : ?>
-									<?php
-									$city = get_post_meta(get_the_ID(), '_vacancy_city', true);
-									$country = get_post_meta(get_the_ID(), '_vacancy_country', true);
-									?>
-									<?php if ($city || $country) : ?>
-                                        <div class="meta-item location">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                            <span><?php echo esc_html(implode(', ', array_filter(array($city, $country)))); ?></span>
-                                        </div>
-									<?php endif; ?>
-								<?php endif; ?>
-
-								<?php if (!empty($detail_fields['salary'])) : ?>
-									<?php $salary = get_post_meta(get_the_ID(), '_vacancy_salary', true); ?>
-									<?php if ($salary) : ?>
-                                        <div class="meta-item salary">
-                                            <i class="fas fa-euro-sign"></i>
-                                            <span><?php echo esc_html($salary); ?></span>
-                                        </div>
-									<?php endif; ?>
-								<?php endif; ?>
-                            </div>
-                        </header>
-
-						<?php if (!empty($detail_fields['description'])) : ?>
-                            <div class="vacancy-description">
-								<?php the_content(); ?>
-                            </div>
-						<?php endif; ?>
-
-                        <!-- Apply Button -->
-                        <div class="vacancy-apply">
-                            <a href="#application-form" class="rcwp-button rcwp-button-primary">
-								<?php _e('Apply Now', 'recruit-connect-wp'); ?>
-                            </a>
+            <div class="vacancy-meta">
+				<?php foreach ($meta_fields as $key => $field) :
+					$value = get_post_meta(get_the_ID(), '_vacancy_' . $key, true);
+					if (!empty($value)) : ?>
+                        <div class="meta-item">
+                            <i class="dashicons dashicons-<?php echo esc_attr($field['icon']); ?>"></i>
+                            <span class="label"><?php echo esc_html($field['label']); ?>:</span>
+                            <span class="value"><?php echo esc_html($value); ?></span>
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <!-- Sidebar -->
-                    <div class="vacancy-sidebar">
-						<?php if (!empty($detail_fields['jobtype'])) : ?>
-							<?php $jobtype = get_post_meta(get_the_ID(), '_vacancy_jobtype', true); ?>
-							<?php if ($jobtype) : ?>
-                                <div class="sidebar-section">
-                                    <h3><?php _e('Job Type', 'recruit-connect-wp'); ?></h3>
-                                    <p><?php echo esc_html($jobtype); ?></p>
-                                </div>
-							<?php endif; ?>
-						<?php endif; ?>
-
-						<?php if (!empty($detail_fields['education'])) : ?>
-							<?php $education = get_post_meta(get_the_ID(), '_vacancy_education', true); ?>
-							<?php if ($education) : ?>
-                                <div class="sidebar-section">
-                                    <h3><?php _e('Education', 'recruit-connect-wp'); ?></h3>
-                                    <p><?php echo esc_html($education); ?></p>
-                                </div>
-							<?php endif; ?>
-						<?php endif; ?>
-
-						<?php if (!empty($detail_fields['experience'])) : ?>
-							<?php $experience = get_post_meta(get_the_ID(), '_vacancy_experience', true); ?>
-							<?php if ($experience) : ?>
-                                <div class="sidebar-section">
-                                    <h3><?php _e('Experience', 'recruit-connect-wp'); ?></h3>
-                                    <p><?php echo esc_html($experience); ?></p>
-                                </div>
-							<?php endif; ?>
-						<?php endif; ?>
-
-						<?php if (!empty($detail_fields['recruiter'])) : ?>
-							<?php
-							$recruiter_name = get_post_meta(get_the_ID(), '_vacancy_recruitername', true);
-							$recruiter_email = get_post_meta(get_the_ID(), '_vacancy_recruiteremail', true);
-							$recruiter_image = get_post_meta(get_the_ID(), '_vacancy_recruiterimage', true);
-							?>
-							<?php if ($recruiter_name || $recruiter_email) : ?>
-                                <div class="sidebar-section recruiter-info">
-                                    <h3><?php _e('Recruiter', 'recruit-connect-wp'); ?></h3>
-									<?php if ($recruiter_image) : ?>
-                                        <img src="<?php echo esc_url($recruiter_image); ?>" alt="<?php echo esc_attr($recruiter_name); ?>" class="recruiter-image">
-									<?php endif; ?>
-									<?php if ($recruiter_name) : ?>
-                                        <p class="recruiter-name"><?php echo esc_html($recruiter_name); ?></p>
-									<?php endif; ?>
-									<?php if ($recruiter_email) : ?>
-                                        <p class="recruiter-email">
-                                            <a href="mailto:<?php echo esc_attr($recruiter_email); ?>">
-												<?php echo esc_html($recruiter_email); ?>
-                                            </a>
-                                        </p>
-									<?php endif; ?>
-                                </div>
-							<?php endif; ?>
-						<?php endif; ?>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Application Form -->
-            <div class="row">
-                <div class="col-md-8">
-                    <div id="application-form" class="vacancy-application-form">
-                        <h2><?php _e('Apply for this position', 'recruit-connect-wp'); ?></h2>
-						<?php echo do_shortcode('[recruit_connect_application_form]'); ?>
-                    </div>
-                </div>
+					<?php endif;
+				endforeach; ?>
             </div>
         </div>
-    </article>
 
-<?php get_footer(); ?>
+        <div class="vacancy-content">
+			<?php the_content(); ?>
+        </div>
+
+		<?php
+		// Display recruiter information if available
+		$recruiter_name = get_post_meta(get_the_ID(), '_vacancy_recruitername', true);
+		$recruiter_email = get_post_meta(get_the_ID(), '_vacancy_recruiteremail', true);
+		$recruiter_image = get_post_meta(get_the_ID(), '_vacancy_recruiterimage', true);
+
+		if (!empty($recruiter_name)) : ?>
+            <div class="vacancy-recruiter">
+                <h3><?php _e('Contact Person', 'recruit-connect-wp'); ?></h3>
+                <div class="recruiter-info">
+					<?php if (!empty($recruiter_image)) : ?>
+                        <img src="<?php echo esc_url($recruiter_image); ?>"
+                             alt="<?php echo esc_attr($recruiter_name); ?>"
+                             class="recruiter-image">
+					<?php endif; ?>
+
+                    <div class="recruiter-details">
+                        <h4><?php echo esc_html($recruiter_name); ?></h4>
+						<?php if (!empty($recruiter_email)) : ?>
+                            <a href="mailto:<?php echo esc_attr($recruiter_email); ?>"
+                               class="recruiter-email">
+								<?php echo esc_html($recruiter_email); ?>
+                            </a>
+						<?php endif; ?>
+                    </div>
+                </div>
+            </div>
+		<?php endif; ?>
+
+        <!-- Add application form here if needed -->
+    </div>
+
+<?php
+endwhile;
+
+get_footer();
+?>
+
+<style>
+    .recruit-connect-vacancy-detail {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .vacancy-header {
+        margin-bottom: 30px;
+    }
+
+    .vacancy-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .meta-item .dashicons {
+        color: #666;
+    }
+
+    .meta-item .label {
+        font-weight: bold;
+        color: #666;
+    }
+
+    .vacancy-content {
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .vacancy-recruiter {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 4px;
+        margin-top: 30px;
+    }
+
+    .recruiter-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-top: 15px;
+    }
+
+    .recruiter-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .recruiter-details h4 {
+        margin: 0 0 10px 0;
+    }
+
+    .recruiter-email {
+        color: #0073aa;
+        text-decoration: none;
+    }
+
+    .recruiter-email:hover {
+        text-decoration: underline;
+    }
+</style>
