@@ -1,93 +1,74 @@
+import { registerBlockType } from '@wordpress/blocks';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { useBlockProps } from '@wordpress/block-editor';
+import { SelectControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useSelect } from '@wordpress/data';
-import {
-    SelectControl,
-    PanelBody,
-    TextControl,
-    ToggleControl
-} from '@wordpress/components';
-import { InspectorControls } from '@wordpress/block-editor';
 
-const Edit = ({ attributes, setAttributes }) => {
-    const { fieldKey, label, showLabel } = attributes;
+registerBlockType('recruit-connect/vacancy-field', {
+    title: __('Vacancy Field', 'recruit-connect-wp'),
+    icon: 'businessman',
+    category: 'recruit-connect',
+    attributes: {
+        fieldKey: {
+            type: 'string',
+            default: ''
+        }
+    },
+    edit: function Edit({ attributes, setAttributes }) {
+        const { fieldKey } = attributes;
+        const blockProps = useBlockProps();
 
-    // Define available vacancy fields
-    const fields = {
-        '_vacancy_company': __('Company', 'recruit-connect-wp'),
-        '_vacancy_city': __('City', 'recruit-connect-wp'),
-        '_vacancy_salary': __('Salary', 'recruit-connect-wp'),
-        '_vacancy_education': __('Education', 'recruit-connect-wp'),
-        '_vacancy_jobtype': __('Job Type', 'recruit-connect-wp'),
-        '_vacancy_experience': __('Experience', 'recruit-connect-wp'),
-        '_vacancy_recruitername': __('Recruiter Name', 'recruit-connect-wp'),
-        '_vacancy_recruiteremail': __('Recruiter Email', 'recruit-connect-wp'),
-        '_vacancy_recruiterimage': __('Recruiter Image', 'recruit-connect-wp'),
-        '_vacancy_streetaddress': __('Street Address', 'recruit-connect-wp'),
-        '_vacancy_postalcode': __('Postal Code', 'recruit-connect-wp'),
-        '_vacancy_state': __('State', 'recruit-connect-wp'),
-        '_vacancy_country': __('Country', 'recruit-connect-wp'),
-        '_vacancy_remotetype': __('Remote Type', 'recruit-connect-wp')
-    };
+        const postMeta = useSelect(select => {
+            const { getCurrentPostType, getEditedPostAttribute } = select('core/editor');
+            const postType = getCurrentPostType();
+            console.log('Post Type:', postType); // Debug log
 
-    // Get the current post meta value
-    const metaValue = useSelect((select) => {
-        const postId = select('core/editor').getCurrentPostId();
-        const meta = select('core/editor').getEditedPostAttribute('meta');
-        return meta?.[fieldKey] || '';
-    }, [fieldKey]);
+            const meta = getEditedPostAttribute('meta');
+            console.log('Full meta:', meta); // Debug log
 
-    return (
-        <>
-            <InspectorControls>
-                <PanelBody title={__('Field Settings', 'recruit-connect-wp')}>
-                    <SelectControl
-                        label={__('Select Field', 'recruit-connect-wp')}
-                        value={fieldKey}
-                        options={Object.entries(fields).map(([value, label]) => ({
-                            value,
-                            label
-                        }))}
-                        onChange={(value) => {
-                            setAttributes({
-                                fieldKey: value,
-                                label: fields[value]
-                            });
-                        }}
-                    />
-                    <TextControl
-                        label={__('Custom Label', 'recruit-connect-wp')}
-                        value={label}
-                        onChange={(value) => setAttributes({ label: value })}
-                    />
-                    <ToggleControl
-                        label={__('Show Label', 'recruit-connect-wp')}
-                        checked={showLabel}
-                        onChange={(value) => setAttributes({ showLabel: value })}
-                    />
-                </PanelBody>
-            </InspectorControls>
-            <div className="wp-block-recruit-connect-vacancy-field">
-                {fieldKey ? (
-                    <>
-                        {showLabel && <span className="field-label">{label}: </span>}
+            return meta || {};
+        }, []);
+
+        console.log('Selected field:', fieldKey); // Debug log
+        console.log('Field value:', postMeta[fieldKey]); // Debug log
+
+        const vacancyFields = [
+            { key: '_vacancy_id', label: __('Vacancy ID', 'recruit-connect-wp') },
+            { key: '_vacancy_company', label: __('Company', 'recruit-connect-wp') },
+            // ... rest of your fields
+        ];
+
+        return (
+            <div {...blockProps}>
+                <SelectControl
+                    label={__('Select Vacancy Field', 'recruit-connect-wp')}
+                    value={fieldKey}
+                    options={[
+                        { label: __('Select a field...', 'recruit-connect-wp'), value: '' },
+                        ...vacancyFields.map(({ key, label }) => ({
+                            label,
+                            value: key
+                        }))
+                    ]}
+                    onChange={(value) => setAttributes({ fieldKey: value })}
+                />
+                {fieldKey && (
+                    <div className="vacancy-field-preview">
+                        <span className="field-label">
+                            {vacancyFields.find(f => f.key === fieldKey)?.label}:
+                        </span>
+                        {' '}
                         <span className="field-value">
-                            {fieldKey === '_vacancy_recruiterimage' ? (
-                                metaValue ? (
-                                    <img src={metaValue} alt={label} className="recruiter-image" />
-                                ) : (
-                                    __('(No image)', 'recruit-connect-wp')
-                                )
+                            {fieldKey === '_vacancy_recruiterimage' && postMeta[fieldKey] ? (
+                                <img src={postMeta[fieldKey]} alt="" className="recruiter-image" />
                             ) : (
-                                metaValue || __('(No value)', 'recruit-connect-wp')
+                                postMeta[fieldKey] || __('(No value)', 'recruit-connect-wp')
                             )}
                         </span>
-                    </>
-                ) : (
-                    <p>{__('Select a vacancy field', 'recruit-connect-wp')}</p>
+                    </div>
                 )}
             </div>
-        </>
-    );
-};
-
-export default Edit;
+        );
+    },
+    save: () => null
+});

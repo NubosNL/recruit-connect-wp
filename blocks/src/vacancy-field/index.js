@@ -9,19 +9,10 @@ registerBlockType('recruit-connect/vacancy-field', {
     icon: 'businessman',
     category: 'recruit-connect',
     attributes: {
-        fieldKey: {
-            type: 'string',
-            default: ''
-        },
-        label: {
-            type: 'string',
-            default: ''
-        },
-        showLabel: {
-            type: 'boolean',
-            default: true
-        }
+        fieldKey: { type: 'string', default: '' },
+        label: { type: 'string', default: '' },
+        showLabel: { type: 'boolean', default: true },
     },
     edit: Edit,
-    save: Save
+    save: Save,
 });

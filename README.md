@@ -38,3 +38,5 @@ to:
 ## Support
 
 For support, please contact support@nubos.nl or visit https://www.nubos.nl/en/recruit-connect
+
+find . -type f -not -path "*/node_modules/*" \( -name "*.js" -o -name "*.css" -o -name "*.scss" -o -name "*.php" \) -exec echo "=== {} ===" \; -exec cat {} \; > output.txt

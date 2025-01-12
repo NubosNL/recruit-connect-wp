@@ -3,26 +3,34 @@
   background: #f8f9fa;
   border: 1px solid #ddd;
   border-radius: 4px;
+  margin-bottom: 1em;
+
+  .components-select-control {
+    margin-bottom: 1em;
+  }
 
   .vacancy-field-preview {
-    min-height: 40px;
-  }
+    padding: 0.5em;
+    background: #fff;
+    border-radius: 3px;
 
-  .field-label {
-    font-weight: bold;
-    margin-right: 0.5em;
-  }
+    .field-label {
+      font-weight: bold;
+      margin-right: 0.5em;
+      color: #333;
+    }
 
-  .field-value {
-    color: #666;
-  }
+    .field-value {
+      color: #666;
+    }
 
-  img.recruiter-image {
-    max-width: 100px;
-    height: auto;
-    border-radius: 50%;
-    display: block;
-    margin-top: 0.5em;
+    img.recruiter-image {
+      max-width: 100px;
+      height: auto;
+      border-radius: 50%;
+      display: block;
+      margin-top: 0.5em;
+    }
   }
 
   &.is-selected {

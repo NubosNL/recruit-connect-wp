@@ -3,10 +3,11 @@ namespace RecruitConnect;
 
 class PostType {
 	public function __construct() {
+		add_action('init', array($this, 'register_post_meta'));
 		add_action('init', array($this, 'register_vacancy_post_type'));
 		add_action('admin_init', array($this, 'disable_vacancy_editing'));
 		add_filter('post_row_actions', array($this, 'modify_vacancy_actions'), 10, 2);
-		add_filter('single_template', array($this, 'load_vacancy_template'));
+//		add_filter('single_template', array($this, 'load_vacancy_template'));
 
 		// Add meta boxes
 		add_action('add_meta_boxes', array($this, 'add_vacancy_meta_boxes'));
@@ -110,6 +111,42 @@ class PostType {
 		}
 		echo '</table>';
 		echo '</div>';
+	}
+
+	public function register_post_meta() {
+		$meta_fields = array(
+			'_vacancy_id',
+			'_vacancy_company',
+			'_vacancy_city',
+			'_vacancy_createdat',
+			'_vacancy_streetaddress',
+			'_vacancy_postalcode',
+			'_vacancy_state',
+			'_vacancy_country',
+			'_vacancy_salary',
+			'_vacancy_education',
+			'_vacancy_jobtype',
+			'_vacancy_experience',
+			'_vacancy_remotetype',
+			'_vacancy_recruitername',
+			'_vacancy_recruiteremail',
+			'_vacancy_recruiterimage'
+		);
+
+		foreach ($meta_fields as $meta_key) {
+			register_post_meta('vacancy', $meta_key, array(
+				'show_in_rest' => array(
+					'schema' => array(
+						'type'  => 'string',
+						'default' => '',
+					),
+				),
+				'single' => true,
+				'type' => 'string',
+				'auth_callback' => '__return_true', // Allow reading meta
+				'sanitize_callback' => 'sanitize_text_field',
+			));
+		}
 	}
 
 	/**
