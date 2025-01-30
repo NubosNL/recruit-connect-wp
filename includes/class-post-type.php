@@ -3,150 +3,13 @@ namespace RecruitConnect;
 
 class PostType {
 	public function __construct() {
-		add_action('init', array($this, 'register_post_meta'));
 		add_action('init', array($this, 'register_vacancy_post_type'));
+		add_action('init', array($this, 'register_vacancy_application_post_type'));
 		add_action('admin_init', array($this, 'disable_vacancy_editing'));
 		add_filter('post_row_actions', array($this, 'modify_vacancy_actions'), 10, 2);
-//		add_filter('single_template', array($this, 'load_vacancy_template'));
+		add_filter('post_row_actions', array($this, 'modify_vacancy_application_actions'), 10, 2);
+		// We are removing the custom metaboxes and custom field logic, because we use ACF
 
-		// Add meta boxes
-		add_action('add_meta_boxes', array($this, 'add_vacancy_meta_boxes'));
-	}
-
-	/**
-	 * Add meta boxes for vacancy details
-	 */
-	public function add_vacancy_meta_boxes() {
-		add_meta_box(
-			'vacancy_details',
-			__('Vacancy Details', 'recruit-connect-wp'),
-			array($this, 'render_vacancy_details_meta_box'),
-			'vacancy',
-			'normal',
-			'high'
-		);
-
-		add_meta_box(
-			'recruiter_details',
-			__('Recruiter Details', 'recruit-connect-wp'),
-			array($this, 'render_recruiter_details_meta_box'),
-			'vacancy',
-			'normal',
-			'high'
-		);
-	}
-
-	/**
-	 * Render vacancy details meta box
-	 */
-	public function render_vacancy_details_meta_box($post) {
-		$meta_fields = array(
-			'_vacancy_id' => __('Vacancy ID', 'recruit-connect-wp'),
-			'_vacancy_company' => __('Company', 'recruit-connect-wp'),
-			'_vacancy_city' => __('City', 'recruit-connect-wp'),
-			'_vacancy_createdat' => __('Created At', 'recruit-connect-wp'),
-			'_vacancy_streetaddress' => __('Street Address', 'recruit-connect-wp'),
-			'_vacancy_postalcode' => __('Postal Code', 'recruit-connect-wp'),
-			'_vacancy_state' => __('State', 'recruit-connect-wp'),
-			'_vacancy_country' => __('Country', 'recruit-connect-wp'),
-			'_vacancy_salary' => __('Salary', 'recruit-connect-wp'),
-			'_vacancy_education' => __('Education', 'recruit-connect-wp'),
-			'_vacancy_jobtype' => __('Job Type', 'recruit-connect-wp'),
-			'_vacancy_experience' => __('Experience', 'recruit-connect-wp'),
-			'_vacancy_remotetype' => __('Remote Type', 'recruit-connect-wp')
-		);
-
-		echo '<div class="vacancy-meta-fields">';
-		echo '<style>
-            .vacancy-meta-fields table { width: 100%; border-collapse: collapse; }
-            .vacancy-meta-fields th { text-align: left; width: 200px; padding: 8px; }
-            .vacancy-meta-fields td { padding: 8px; }
-            .vacancy-meta-fields tr:nth-child(even) { background: #f9f9f9; }
-        </style>';
-
-		echo '<table>';
-		foreach ($meta_fields as $key => $label) {
-			$value = get_post_meta($post->ID, $key, true);
-			echo '<tr>';
-			echo '<th>' . esc_html($label) . ':</th>';
-			echo '<td>' . esc_html($value) . '</td>';
-			echo '</tr>';
-		}
-		echo '</table>';
-		echo '</div>';
-	}
-
-	/**
-	 * Render recruiter details meta box
-	 */
-	public function render_recruiter_details_meta_box($post) {
-		$meta_fields = array(
-			'_vacancy_recruitername' => __('Recruiter Name', 'recruit-connect-wp'),
-			'_vacancy_recruiteremail' => __('Recruiter Email', 'recruit-connect-wp'),
-			'_vacancy_recruiterimage' => __('Recruiter Image', 'recruit-connect-wp')
-		);
-
-		echo '<div class="recruiter-meta-fields">';
-		echo '<style>
-            .recruiter-meta-fields table { width: 100%; border-collapse: collapse; }
-            .recruiter-meta-fields th { text-align: left; width: 200px; padding: 8px; }
-            .recruiter-meta-fields td { padding: 8px; }
-            .recruiter-meta-fields tr:nth-child(even) { background: #f9f9f9; }
-            .recruiter-meta-fields img { max-width: 100px; height: auto; border-radius: 50%; }
-        </style>';
-
-		echo '<table>';
-		foreach ($meta_fields as $key => $label) {
-			$value = get_post_meta($post->ID, $key, true);
-			echo '<tr>';
-			echo '<th>' . esc_html($label) . ':</th>';
-			echo '<td>';
-			if ($key === '_vacancy_recruiterimage' && !empty($value)) {
-				echo '<img src="' . esc_url($value) . '" alt="Recruiter">';
-			} else {
-				echo esc_html($value);
-			}
-			echo '</td>';
-			echo '</tr>';
-		}
-		echo '</table>';
-		echo '</div>';
-	}
-
-	public function register_post_meta() {
-		$meta_fields = array(
-			'_vacancy_id',
-			'_vacancy_company',
-			'_vacancy_city',
-			'_vacancy_createdat',
-			'_vacancy_streetaddress',
-			'_vacancy_postalcode',
-			'_vacancy_state',
-			'_vacancy_country',
-			'_vacancy_salary',
-			'_vacancy_education',
-			'_vacancy_jobtype',
-			'_vacancy_experience',
-			'_vacancy_remotetype',
-			'_vacancy_recruitername',
-			'_vacancy_recruiteremail',
-			'_vacancy_recruiterimage'
-		);
-
-		foreach ($meta_fields as $meta_key) {
-			register_post_meta('vacancy', $meta_key, array(
-				'show_in_rest' => array(
-					'schema' => array(
-						'type'  => 'string',
-						'default' => '',
-					),
-				),
-				'single' => true,
-				'type' => 'string',
-				'auth_callback' => '__return_true', // Allow reading meta
-				'sanitize_callback' => 'sanitize_text_field',
-			));
-		}
 	}
 
 	/**
@@ -187,6 +50,43 @@ class PostType {
 	}
 
 	/**
+	 * Register the vacancy application post type
+	 */
+	public function register_vacancy_application_post_type() {
+		$labels = array(
+			'name'               => __('Applications', 'recruit-connect-wp'),
+			'singular_name'      => __('Application', 'recruit-connect-wp'),
+			'menu_name'          => __('Applications', 'recruit-connect-wp'),
+			'add_new'            => __('Add New', 'recruit-connect-wp'),
+			'add_new_item'       => __('Add New Application', 'recruit-connect-wp'),
+			'edit_item'          => __('Edit Application', 'recruit-connect-wp'),
+			'new_item'           => __('New Application', 'recruit-connect-wp'),
+			'view_item'          => __('View Application', 'recruit-connect-wp'),
+			'search_items'       => __('Search Applications', 'recruit-connect-wp'),
+			'not_found'          => __('No applications found', 'recruit-connect-wp'),
+			'not_found_in_trash' => __('No applications found in trash', 'recruit-connect-wp')
+		);
+
+		$args = array(
+			'labels'              => $labels,
+			'public'              => false,
+			'exclude_from_search' => true,
+			'publicly_queryable'  => false,
+			'show_ui'            => true,
+			'show_in_menu'       => 'recruit-connect', // Show under Recruit Connect Menu
+			'query_var'          => true,
+			'capability_type'    => 'post',
+			'has_archive'        => false,
+			'hierarchical'       => false,
+			'supports'           => array('title'),
+			'menu_icon'          => 'dashicons-email',
+			// We will use a filter to set the submenu position dynamically, instead of menu_position here
+		);
+
+		register_post_type('vacancy_application', $args);
+	}
+
+	/**
 	 * Disable editing capabilities for vacancies
 	 *
 	 * @since    1.0.0
@@ -204,6 +104,22 @@ class PostType {
                 </style>';
 			});
 		}
+	}
+
+	/**
+	 * Modify the actions available for applications in the list view
+	 *
+	 * @since    1.0.0
+	 * @param    array     $actions    An array of row action links.
+	 * @param    WP_Post   $post       The post object.
+	 * @return   array                 Modified array of row action links
+	 */
+	public function modify_vacancy_application_actions($actions, $post) {
+		if ($post->post_type === 'vacancy_application') {
+			// Remove quick edit action
+			unset($actions['inline hide-if-no-js']);
+		}
+		return $actions;
 	}
 
 	/**

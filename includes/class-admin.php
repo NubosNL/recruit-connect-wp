@@ -3,17 +3,46 @@ namespace RecruitConnect;
 
 /**
  * The admin-specific functionality of the plugin.
+ *
+ * @since      1.0.0
+ * @package    RecruitConnect
+ * @subpackage RecruitConnect/admin
  */
 class Admin {
+
+	/**
+	 * The ID of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $plugin_name    The ID of this plugin.
+	 */
 	private $plugin_name;
+
+	/**
+	 * The version of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $version    The current version of this plugin.
+	 */
 	private $version;
 
+	/**
+	 * Initialize the class and set its properties.
+	 *
+	 * @since    1.0.0
+	 * @param    string    $plugin_name    The name of this plugin.
+	 * @param    string    $version        The version of this plugin.
+	 */
 	public function __construct($plugin_name, $version) {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
 		// Add menu items
 		add_action('admin_menu', array($this, 'add_plugin_admin_menu'));
+		add_action('admin_notices', array($this, 'check_acf_dependency'));
+
 
 		// Add settings link to plugins page
 		add_filter('plugin_action_links_' . plugin_basename(RECRUIT_CONNECT_PLUGIN_DIR . 'recruit-connect-wp.php'),
@@ -21,8 +50,76 @@ class Admin {
 		);
 	}
 
+
+	public function check_acf_dependency() {
+		if (!is_plugin_active('advanced-custom-fields/acf.php') && !defined('ACF_PRO')) {
+			?>
+			<div class="notice notice-warning">
+				<p>
+					<?php
+					printf(
+						__('The <strong>Recruit Connect WP</strong> plugin requires the <strong>Advanced Custom Fields</strong> plugin to be installed and activated. <a href="%s" target="_blank">Install Now</a>', 'recruit-connect-wp'),
+						esc_url( admin_url('plugin-install.php?s=advanced%20custom%20fields&tab=search&type=term') )
+					);
+					?>
+				</p>
+			</div>
+			<?php
+		}
+	}
+
+	/**
+	 * Register the stylesheets for the admin area.
+	 *
+	 * @since    1.0.0
+	 */
+	public function enqueue_styles() {
+		wp_enqueue_style(
+			$this->plugin_name,
+			RECRUIT_CONNECT_PLUGIN_URL . 'admin/css/admin.css',
+			array(),
+			$this->version,
+			'all'
+		);
+	}
+
+	/**
+	 * Register the JavaScript for the admin area.
+	 *
+	 * @since    1.0.0
+	 */
+	public function enqueue_scripts() {
+		wp_enqueue_script(
+			$this->plugin_name,
+			RECRUIT_CONNECT_PLUGIN_URL . 'admin/js/admin.js',
+			array('jquery'),
+			$this->version,
+			false
+		);
+
+		wp_localize_script($this->plugin_name, 'recruitConnect', array(
+			'ajaxurl' => admin_url('admin-ajax.php'),
+			'nonce' => wp_create_nonce('recruit_connect_nonce')
+		));
+	}
+
+	/**
+	 * Add settings action link to the plugins page.
+	 *
+	 * @since    1.0.0
+	 */
+	public function add_action_links($links) {
+		$settings_link = array(
+			'<a href="' . admin_url('admin.php?page=recruit-connect-settings') . '">' .
+			__('Settings', 'recruit-connect-wp') . '</a>'
+		);
+		return array_merge($settings_link, $links);
+	}
+
 	/**
 	 * Register the administration menu for this plugin into the WordPress Dashboard menu.
+	 *
+	 * @since    1.0.0
 	 */
 	public function add_plugin_admin_menu() {
 		// Main menu item
@@ -75,66 +172,76 @@ class Admin {
 	}
 
 	/**
-	 * Add settings action link to the plugins page.
+	 * Get statistics for the dashboard
+	 *
+	 * @since    1.0.0
+	 * @return   array    Array containing dashboard statistics
 	 */
-	public function add_action_links($links) {
-		$settings_link = array(
-			'<a href="' . admin_url('admin.php?page=recruit-connect-settings') . '">' . __('Settings', 'recruit-connect-wp') . '</a>',
+	private function get_dashboard_stats() {
+		// Initialize default values
+		$stats = array(
+			'total_vacancies' => 0,
+			'total_applications' => 0,
+			'last_import' => ''
 		);
-		return array_merge($settings_link, $links);
+
+		// Get vacancy counts safely
+		$vacancy_counts = wp_count_posts('vacancy');
+		if ($vacancy_counts && isset($vacancy_counts->publish)) {
+			$stats['total_vacancies'] = (int)$vacancy_counts->publish;
+		}
+
+		// Get application counts safely
+		$application_counts = wp_count_posts('vacancy_application');
+		if ($application_counts && isset($application_counts->publish)) {
+			$stats['total_applications'] = (int)$application_counts->publish;
+		}
+
+		// Get last import time
+		$last_import = get_option('recruit_connect_last_import');
+		if ($last_import) {
+			$stats['last_import'] = $last_import;
+		}
+
+		return $stats;
 	}
 
 	/**
 	 * Render the dashboard page
+	 *
+	 * @since    1.0.0
 	 */
 	public function display_plugin_dashboard_page() {
-		include_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/dashboard.php';
+		$stats = $this->get_dashboard_stats();
+		require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/dashboard.php';
 	}
 
 	/**
 	 * Render the settings page
+	 *
+	 * @since    1.0.0
 	 */
 	public function display_plugin_settings_page() {
-		include_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/settings.php';
+		$active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'general';
+
+		require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/settings.php';
 	}
 
 	/**
 	 * Render the support page
+	 *
+	 * @since    1.0.0
 	 */
 	public function display_plugin_support_page() {
-		include_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/support.php';
+		require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/support.php';
 	}
 
 	/**
 	 * Render the about page
+	 *
+	 * @since    1.0.0
 	 */
 	public function display_plugin_about_page() {
-		include_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/about.php';
-	}
-
-	/**
-	 * Register the stylesheets for the admin area.
-	 */
-	public function enqueue_styles() {
-		wp_enqueue_style(
-			$this->plugin_name,
-			RECRUIT_CONNECT_PLUGIN_URL . 'admin/css/admin.css',
-			array(),
-			$this->version,
-			'all'
-		);
-	}
-
-	/**
-	 * Register the JavaScript for the admin area.
-	 */
-	public function enqueue_scripts() {
-		wp_enqueue_script(
-			$this->plugin_name,
-			RECRUIT_CONNECT_PLUGIN_URL . 'admin/js/admin.js',
-			array('jquery'),
-			$this->version,
-			false
-		);
+		require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/about.php';
 	}
 }

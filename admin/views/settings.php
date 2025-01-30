@@ -24,10 +24,6 @@ if (!isset($active_tab)) {
            class="nav-tab <?php echo $active_tab == 'sync' ? 'nav-tab-active' : ''; ?>">
 			<?php echo esc_html__('Synchronization', 'recruit-connect-wp'); ?>
         </a>
-        <a href="?page=recruit-connect-settings&tab=detail"
-           class="nav-tab <?php echo $active_tab == 'detail' ? 'nav-tab-active' : ''; ?>">
-			<?php echo esc_html__('Detail Page', 'recruit-connect-wp'); ?>
-        </a>
         <a href="?page=recruit-connect-settings&tab=logs"
            class="nav-tab <?php echo $active_tab == 'logs' ? 'nav-tab-active' : ''; ?>">
 			<?php echo esc_html__('Logs', 'recruit-connect-wp'); ?>
@@ -41,13 +37,10 @@ if (!isset($active_tab)) {
 			'recruit_connect_xml_url',
 			'recruit_connect_application_url',
 			'recruit_connect_detail_param',
-			'recruit_connect_enable_detail',
 			'recruit_connect_search_components',
 			'recruit_connect_thank_you_message',
 			'recruit_connect_required_fields',
 			'recruit_connect_sync_frequency',
-			'recruit_connect_detail_fields',
-			'recruit_connect_fields_order'
 		);
 
 		// Add hidden fields for all settings to preserve their values
@@ -73,9 +66,6 @@ if (!isset($active_tab)) {
 				break;
 			case 'sync':
 				require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/settings/sync.php';
-				break;
-			case 'detail':
-				require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/settings/detail.php';
 				break;
 			case 'logs':
 				require_once RECRUIT_CONNECT_PLUGIN_DIR . 'admin/views/settings/logs.php';

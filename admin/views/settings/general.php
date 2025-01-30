@@ -60,24 +60,6 @@ if (!defined('ABSPATH')) {
 
     <tr>
         <th scope="row">
-			<?php echo esc_html__('Enable Detail Page', 'recruit-connect-wp'); ?>
-        </th>
-        <td>
-            <fieldset>
-                <label for="recruit_connect_enable_detail">
-                    <input type="checkbox"
-                           name="recruit_connect_enable_detail"
-                           id="recruit_connect_enable_detail"
-                           value="1"
-						<?php checked(get_option('recruit_connect_enable_detail', '1')); ?>>
-					<?php echo esc_html__('Enable individual vacancy detail pages', 'recruit-connect-wp'); ?>
-                </label>
-            </fieldset>
-        </td>
-    </tr>
-
-    <tr>
-        <th scope="row">
 			<?php echo esc_html__('Search Components', 'recruit-connect-wp'); ?>
         </th>
         <td>
@@ -92,7 +74,6 @@ if (!defined('ABSPATH')) {
 					'category' => __('Category', 'recruit-connect-wp'),
 					'education' => __('Education', 'recruit-connect-wp'),
 					'jobtype' => __('Job Type', 'recruit-connect-wp'),
-					'salary' => __('Salary', 'recruit-connect-wp')
 				);
 
 				foreach ($components as $value => $label): ?>

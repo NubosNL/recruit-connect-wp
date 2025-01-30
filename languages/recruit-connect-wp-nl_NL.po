@@ -1,0 +1,835 @@
+# Copyright (C) 2025 Nubos B.V.
+# This file is distributed under the GPL-2.0+.
+msgid ""
+msgstr ""
+"Project-Id-Version: Recruit Connect WP 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/recruit-connect-wp\n"
+"Last-Translator: VOLLEDIGE NAAM <EMAIL@ADRES>\n"
+"Language-Team: Dutch <nl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-01-29T15:33:47+00:00\n"
+"PO-Revision-Date: 2025-01-29 15:33+0000\n"
+"X-Generator: WP-CLI 2.7.1\n"
+"X-Domain: recruit-connect-wp\n"
+
+#. Plugin Name of the plugin
+msgid "Recruit Connect WP"
+msgstr "Recruit Connect WP"
+
+#. Plugin URI of the plugin
+msgid "https://www.nubos.nl/en/recruit-connect"
+msgstr "https://www.nubos.nl/nl/recruit-connect"
+
+#. Description of the plugin
+msgid "Import and display job vacancies from Recruit Connect XML feed"
+msgstr "Importeer en toon vacatures vanuit Recruit Connect XML feed"
+
+#. Author of the plugin
+msgid "Nubos B.V."
+msgstr "Nubos B.V."
+
+#. Author URI of the plugin
+msgid "https://www.nubos.nl/en"
+msgstr "https://www.nubos.nl/nl"
+
+#: admin/class-admin.php:106
+#: admin/class-admin.php:140
+#: admin/class-admin.php:141
+#: includes/class-admin.php:114
+#: includes/class-admin.php:148
+#: includes/class-admin.php:149
+msgid "Settings"
+msgstr "Instellingen"
+
+#: admin/class-admin.php:119
+#: admin/class-admin.php:120
+#: includes/class-admin.php:127
+#: includes/class-admin.php:128
+msgid "Recruit Connect"
+msgstr "Recruit Connect"
+
+#: admin/class-admin.php:131
+#: admin/class-admin.php:132
+#: includes/class-admin.php:139
+#: includes/class-admin.php:140
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: admin/class-admin.php:149
+#: admin/class-admin.php:150
+#: includes/class-admin.php:157
+#: includes/class-admin.php:158
+msgid "Support"
+msgstr "Ondersteuning"
+
+#: admin/class-admin.php:158
+#: admin/class-admin.php:159
+#: includes/class-admin.php:166
+#: includes/class-admin.php:167
+msgid "About"
+msgstr "Over"
+
+#: admin/class-settings.php:36
+#: includes/class-activator.php:85
+#: includes/class-ajax-handler.php:263
+#: includes/class-application-form.php:169
+msgid "Thank you for your application!"
+msgstr "Bedankt voor je sollicitatie!"
+
+#: admin/views/about.php:2
+msgid "About Recruit Connect"
+msgstr "Over Recruit Connect"
+
+#: admin/views/about.php:9
+msgid "Welcome to Recruit Connect"
+msgstr "Welkom bij Recruit Connect"
+
+#: admin/views/about.php:13
+msgid "About Nubos B.V."
+msgstr "Over Nubos B.V."
+
+#: admin/views/about.php:14
+msgid "Nubos B.V. is a leading provider of recruitment software solutions, helping businesses streamline their recruitment processes and improve hiring efficiency."
+msgstr "Nubos B.V. is een toonaangevende leverancier van recruitment software oplossingen, die bedrijven helpt hun recruitment processen te stroomlijnen en de efficiëntie van de werving te verbeteren."
+
+#: admin/views/about.php:18
+msgid "Recruit Connect Features"
+msgstr "Recruit Connect Functies"
+
+#: admin/views/about.php:20
+msgid "Automated XML vacancy import"
+msgstr "Geautomatiseerde XML vacature import"
+
+#: admin/views/about.php:21
+msgid "Customizable application forms"
+msgstr "Aanpasbare sollicitatieformulieren"
+
+#: admin/views/about.php:22
+msgid "Advanced search functionality"
+msgstr "Geavanceerde zoekfunctionaliteit"
+
+#: admin/views/about.php:23
+msgid "Detailed vacancy pages"
+msgstr "Gedetailleerde vacaturepagina's"
+
+#: admin/views/about.php:24
+msgid "Integration with your existing website"
+msgstr "Integratie met je bestaande website"
+
+#: admin/views/about.php:29
+msgid "Useful Links"
+msgstr "Handige Links"
+
+#: admin/views/about.php:34
+msgid "Visit Product Website"
+msgstr "Bezoek Productwebsite"
+
+#: admin/views/about.php:39
+msgid "Contact Us"
+msgstr "Neem Contact Op"
+
+#: admin/views/about.php:45
+msgid "Plugin Information"
+msgstr "Plugin Informatie"
+
+#: admin/views/about.php:48
+msgid "Version"
+msgstr "Versie"
+
+#: admin/views/about.php:52
+#: includes/class-ajax-handler.php:159
+msgid "WordPress Version"
+msgstr "WordPress Versie"
+
+#: admin/views/about.php:56
+msgid "PHP Version"
+msgstr "PHP Versie"
+
+#: admin/views/dashboard.php:12
+msgid "Recruit Connect Dashboard"
+msgstr "Recruit Connect Dashboard"
+
+#: admin/views/dashboard.php:16
+msgid "Statistics"
+msgstr "Statistieken"
+
+#: admin/views/dashboard.php:19
+msgid "Total Vacancies"
+msgstr "Totaal Aantal Vacatures"
+
+#: admin/views/dashboard.php:24
+msgid "Total Applications"
+msgstr "Totaal Aantal Sollicitaties"
+
+#: admin/views/dashboard.php:29
+msgid "Last Import"
+msgstr "Laatste Import"
+
+#: admin/views/dashboard.php:35
+msgid "Never"
+msgstr "Nooit"
+
+#: admin/views/settings.php:12
+msgid "Recruit Connect Settings"
+msgstr "Recruit Connect Instellingen"
+
+#: admin/views/settings.php:17
+msgid "General"
+msgstr "Algemeen"
+
+#: admin/views/settings.php:21
+msgid "Application Form"
+msgstr "Sollicitatieformulier"
+
+#: admin/views/settings.php:25
+msgid "Synchronization"
+msgstr "Synchronisatie"
+
+#: admin/views/settings.php:29
+msgid "Logs"
+msgstr "Logboeken"
+
+#: admin/views/settings/application.php:17
+msgid "Thank You Message"
+msgstr "Bedankbericht"
+
+#: admin/views/settings/application.php:35
+msgid "Message shown after successful application submission"
+msgstr "Bericht dat wordt getoond na succesvolle sollicitatie"
+
+#: admin/views/settings/application.php:42
+msgid "Required Fields"
+msgstr "Verplichte Velden"
+
+#: admin/views/settings/application.php:48
+#: templates/application-form.php:34
+msgid "Full Name"
+msgstr "Volledige Naam"
+
+#: admin/views/settings/application.php:49
+#: templates/application-form.php:43
+msgid "Email Address"
+msgstr "E-mailadres"
+
+#: admin/views/settings/application.php:50
+#: templates/application-form.php:52
+msgid "Phone Number"
+msgstr "Telefoonnummer"
+
+#: admin/views/settings/application.php:51
+#: templates/application-form.php:61
+msgid "CV Upload"
+msgstr "CV Uploaden"
+
+#: admin/views/settings/application.php:52
+#: templates/application-form.php:72
+msgid "Motivation Letter"
+msgstr "Motivatiebrief"
+
+#: admin/views/settings/application.php:66
+msgid "Select which fields should be required in the application form"
+msgstr "Selecteer welke velden verplicht moeten zijn in het sollicitatieformulier"
+
+#: admin/views/settings/general.php:10
+msgid "XML Feed URL"
+msgstr "XML Feed URL"
+
+#: admin/views/settings/general.php:20
+msgid "Enter the URL of your Recruit Connect XML feed"
+msgstr "Voer de URL van je Recruit Connect XML feed in"
+
+#: admin/views/settings/general.php:28
+msgid "Application Destination URL"
+msgstr "URL Sollicitatiebestemming"
+
+#: admin/views/settings/general.php:38
+msgid "URL where application forms will be submitted"
+msgstr "URL waar sollicitatieformulieren worden ingediend"
+
+#: admin/views/settings/general.php:46
+msgid "Vacancy Detail URL Parameter"
+msgstr "URL Parameter Vacature Detail"
+
+#: admin/views/settings/general.php:56
+msgid "URL parameter used for vacancy detail pages"
+msgstr "URL parameter gebruikt voor vacature detailpagina's"
+
+#: admin/views/settings/general.php:63
+msgid "Search Components"
+msgstr "Zoekcomponenten"
+
+#: admin/views/settings/general.php:74
+#: includes/class-shortcodes.php:36
+#: templates/partials/vacancy-filters.php:5
+#: templates/vacancy-overview.php:82
+msgid "Category"
+msgstr "Categorie"
+
+#: admin/views/settings/general.php:75
+#: includes/class-ajax-handler.php:394
+#: includes/class-plugin.php:190
+msgid "Education"
+msgstr "Opleiding"
+
+#: admin/views/settings/general.php:76
+#: includes/class-ajax-handler.php:400
+#: includes/class-plugin.php:196
+#: includes/class-shortcodes.php:34
+#: templates/partials/vacancy-filters.php:35
+#: templates/vacancy-overview.php:80
+msgid "Job Type"
+msgstr "Soort Dienstverband"
+
+#: admin/views/settings/logs.php:8
+msgid "Time"
+msgstr "Tijd"
+
+#: admin/views/settings/logs.php:9
+#: admin/views/support.php:48
+#: includes/class-ajax-handler.php:154
+msgid "Message"
+msgstr "Bericht"
+
+#: admin/views/settings/logs.php:25
+msgid "Clear Logs"
+msgstr "Logboeken Wissen"
+
+#: admin/views/settings/logs.php:29
+#: admin/views/settings/sync.php:62
+msgid "No logs available."
+msgstr "Geen logboeken beschikbaar."
+
+#: admin/views/settings/logs.php:36
+msgid "Are you sure you want to clear all logs?"
+msgstr "Weet je zeker dat je alle logboeken wilt wissen?"
+
+#: admin/views/settings/sync.php:13
+msgid "XML Check Frequency"
+msgstr "XML Controle Frequentie"
+
+#: admin/views/settings/sync.php:21
+msgid "Hourly"
+msgstr "Elk uur"
+
+#: admin/views/settings/sync.php:22
+msgid "Twice Daily"
+msgstr "Twee keer per dag"
+
+#: admin/views/settings/sync.php:23
+msgid "Daily"
+msgstr "Dagelijks"
+
+#: admin/views/settings/sync.php:24
+msgid "Every 4 Hours"
+msgstr "Elke 4 uur"
+
+#: admin/views/settings/sync.php:39
+msgid "Manual Sync"
+msgstr "Handmatige Synchronisatie"
+
+#: admin/views/settings/sync.php:42
+msgid "Sync Now"
+msgstr "Nu Synchroniseren"
+
+#: admin/views/settings/sync.php:51
+msgid "Recent Logs"
+msgstr "Recente Logboeken"
+
+#: admin/views/settings/sync.php:96
+msgid "Connection error occurred"
+msgstr "Verbindingsfout opgetreden"
+
+#: admin/views/support.php:2
+msgid "Recruit Connect Support"
+msgstr "Recruit Connect Ondersteuning"
+
+#: admin/views/support.php:11
+msgid "Your Name"
+msgstr "Jouw Naam"
+
+#: admin/views/support.php:23
+msgid "Your Email"
+msgstr "Jouw E-mail"
+
+#: admin/views/support.php:36
+#: includes/class-ajax-handler.php:152
+msgid "Subject"
+msgstr "Onderwerp"
+
+#: admin/views/support.php:64
+msgid "Send Support Request"
+msgstr "Verzend Ondersteuningsverzoek"
+
+#: admin/views/support.php:113
+msgid "Connection error occurred. Please try again."
+msgstr "Verbindingsfout opgetreden. Probeer het opnieuw."
+
+#: includes/class-activator.php:26
+msgid "This plugin requires WordPress version 6.0 or higher."
+msgstr "Deze plugin vereist WordPress versie 6.0 of hoger."
+
+#: includes/class-activator.php:27
+msgid "Plugin Activation Error"
+msgstr "Plugin Activeringsfout"
+
+#: includes/class-admin.php:61
+msgid "The <strong>Recruit Connect WP</strong> plugin requires the <strong>Advanced Custom Fields</strong> plugin to be installed and activated. <a href=\"%s\" target=\"_blank\">Install Now</a>"
+msgstr "De <strong>Recruit Connect WP</strong> plugin vereist dat de <strong>Advanced Custom Fields</strong> plugin geïnstalleerd en geactiveerd is. <a href=\"%s\" target=\"_blank\">Installeer nu</a>"
+
+#: includes/class-ajax-handler.php:114
+msgid "Unauthorized access"
+msgstr "Onbevoegde toegang"
+
+#: includes/class-ajax-handler.php:125
+msgid "All fields are required"
+msgstr "Alle velden zijn verplicht"
+
+#: includes/class-ajax-handler.php:147
+msgid "New Support Request from Recruit Connect WP Plugin"
+msgstr "Nieuw Ondersteuningsverzoek van Recruit Connect WP Plugin"
+
+#: includes/class-ajax-handler.php:148
+msgid "Name"
+msgstr "Naam"
+
+#: includes/class-ajax-handler.php:150
+msgid "Email"
+msgstr "E-mail"
+
+#: includes/class-ajax-handler.php:156
+msgid "Site Information"
+msgstr "Site Informatie"
+
+#: includes/class-ajax-handler.php:157
+msgid "Site URL"
+msgstr "Site URL"
+
+#: includes/class-ajax-handler.php:173
+msgid "Support request sent successfully"
+msgstr "Ondersteuningsverzoek succesvol verzonden"
+
+#: includes/class-ajax-handler.php:181
+msgid "Failed to send support request. Please try again or contact us directly."
+msgstr "Verzenden van ondersteuningsverzoek mislukt. Probeer het opnieuw of neem direct contact met ons op."
+
+#: includes/class-ajax-handler.php:201
+msgid "Field %s is required"
+msgstr "Veld %s is verplicht"
+
+#: includes/class-ajax-handler.php:224
+msgid "Application from %s for %s"
+msgstr "Sollicitatie van %s voor %s"
+
+#: includes/class-ajax-handler.php:253
+#: includes/class-application-form.php:154
+msgid "Failed to store application"
+msgstr "Opslaan van sollicitatie mislukt"
+
+#: includes/class-ajax-handler.php:336
+#: includes/class-plugin.php:126
+msgid "Vacancy Fields"
+msgstr "Vacature Velden"
+
+#: includes/class-ajax-handler.php:340
+#: includes/class-ajax-handler.php:459
+#: includes/class-plugin.php:130
+#: includes/class-plugin.php:258
+msgid "Vacancy ID"
+msgstr "Vacature ID"
+
+#: includes/class-ajax-handler.php:346
+#: includes/class-plugin.php:136
+msgid "Company"
+msgstr "Bedrijf"
+
+#: includes/class-ajax-handler.php:352
+#: includes/class-plugin.php:142
+msgid "City"
+msgstr "Plaats"
+
+#: includes/class-ajax-handler.php:358
+#: includes/class-plugin.php:148
+msgid "Created At"
+msgstr "Aangemaakt op"
+
+#: includes/class-ajax-handler.php:364
+#: includes/class-plugin.php:154
+msgid "Street Address"
+msgstr "Straatnaam"
+
+#: includes/class-ajax-handler.php:370
+#: includes/class-plugin.php:160
+msgid "Postal Code"
+msgstr "Postcode"
+
+#: includes/class-ajax-handler.php:376
+#: includes/class-plugin.php:166
+msgid "State"
+msgstr "Provincie"
+
+#: includes/class-ajax-handler.php:382
+#: includes/class-plugin.php:172
+msgid "Country"
+msgstr "Land"
+
+#: includes/class-ajax-handler.php:388
+msgid "Salary"
+msgstr "Salaris"
+
+#: includes/class-ajax-handler.php:406
+#: includes/class-plugin.php:202
+msgid "Experience"
+msgstr "Ervaring"
+
+#: includes/class-ajax-handler.php:412
+#: includes/class-plugin.php:208
+msgid "Remote Type"
+msgstr "Soort Remote"
+
+#: includes/class-ajax-handler.php:418
+#: includes/class-plugin.php:214
+msgid "Recruiter Name"
+msgstr "Naam Recruiter"
+
+#: includes/class-ajax-handler.php:424
+#: includes/class-plugin.php:220
+msgid "Recruiter Email"
+msgstr "E-mail Recruiter"
+
+#: includes/class-ajax-handler.php:430
+#: includes/class-plugin.php:226
+msgid "Recruiter Image"
+msgstr "Afbeelding Recruiter"
+
+#: includes/class-ajax-handler.php:455
+#: includes/class-plugin.php:254
+msgid "Application Fields"
+msgstr "Sollicitatievelden"
+
+#: includes/class-ajax-handler.php:465
+#: includes/class-plugin.php:264
+msgid "Applicant Name"
+msgstr "Naam Sollicitant"
+
+#: includes/class-ajax-handler.php:471
+#: includes/class-plugin.php:270
+msgid "Applicant Email"
+msgstr "E-mail Sollicitant"
+
+#: includes/class-ajax-handler.php:477
+#: includes/class-plugin.php:276
+msgid "Applicant Phone"
+msgstr "Telefoon Sollicitant"
+
+#: includes/class-ajax-handler.php:483
+#: includes/class-plugin.php:282
+msgid "Applicant Motivation"
+msgstr "Motivatie Sollicitant"
+
+#: includes/class-ajax-handler.php:489
+#: includes/class-plugin.php:288
+msgid "Applicant CV"
+msgstr "CV Sollicitant"
+
+#: includes/class-ajax-handler.php:495
+#: includes/class-plugin.php:294
+msgid "Application Type"
+msgstr "Type Sollicitatie"
+
+#: includes/class-ajax-handler.php:501
+#: includes/class-plugin.php:300
+msgid "External Submission Status"
+msgstr "Externe Indiendstatus"
+
+#: includes/class-ajax-handler.php:507
+#: includes/class-plugin.php:306
+msgid "Last Error"
+msgstr "Laatste Fout"
+
+#: includes/class-ajax-handler.php:559
+msgid "New Application: %s"
+msgstr "Nieuwe Sollicitatie: %s"
+
+#: includes/class-application-form.php:47
+#: includes/class-application-form.php:82
+msgid "This field is required"
+msgstr "Dit veld is verplicht"
+
+#: includes/class-application-form.php:48
+#: includes/class-application-form.php:88
+msgid "Please enter a valid email address"
+msgstr "Voer een geldig e-mailadres in"
+
+#: includes/class-application-form.php:49
+msgid "Please enter a valid phone number"
+msgstr "Voer een geldig telefoonnummer in"
+
+#: includes/class-application-form.php:50
+#: includes/class-application-form.php:181
+msgid "File size must be less than 10MB"
+msgstr "Bestandsgrootte moet minder dan 10MB zijn"
+
+#: includes/class-application-form.php:51
+#: includes/class-application-form.php:188
+msgid "Only PDF, DOC, and DOCX files are allowed"
+msgstr "Alleen PDF, DOC en DOCX bestanden zijn toegestaan"
+
+#: includes/class-application-form.php:101
+msgid "CV is required"
+msgstr "CV is verplicht"
+
+#: includes/class-application-form.php:115
+msgid "Open Application from %s"
+msgstr "Open Sollicitatie van %s"
+
+#: includes/class-application-form.php:116
+msgid "Application for %s from %s"
+msgstr "Sollicitatie voor %s van %s"
+
+#: includes/class-application-form.php:263
+msgid "[Alert] Failed to submit application #%d to external endpoint"
+msgstr "[Alert] Indienen van sollicitatie #%d naar extern eindpunt mislukt"
+
+#: includes/class-application-form.php:268
+msgid ""
+"Application #%d failed to submit to the external endpoint after multiple attempts.\n"
+"\n"
+"Last error: %s"
+msgstr ""
+"Indienen van sollicitatie #%d naar het externe eindpunt is na meerdere pogingen mislukt.\n"
+"\n"
+"Laatste fout: %s"
+
+#: includes/class-plugin.php:178
+msgid "Salary Minimum"
+msgstr "Salaris Minimum"
+
+#: includes/class-plugin.php:184
+msgid "Salary Maximum"
+msgstr "Salaris Maximum"
+
+#: includes/class-post-type.php:20
+#: includes/class-post-type.php:22
+#: includes/class-shortcodes.php:32
+#: templates/vacancy-overview.php:78
+msgid "Vacancies"
+msgstr "Vacatures"
+
+#: includes/class-post-type.php:21
+#: includes/class-shortcodes.php:31
+#: templates/vacancy-overview.php:77
+msgid "Vacancy"
+msgstr "Vacature"
+
+#: includes/class-post-type.php:23
+#: includes/class-post-type.php:60
+msgid "Add New"
+msgstr "Nieuwe Toevoegen"
+
+#: includes/class-post-type.php:24
+msgid "Add New Vacancy"
+msgstr "Nieuwe Vacature Toevoegen"
+
+#: includes/class-post-type.php:25
+msgid "Edit Vacancy"
+msgstr "Vacature Bewerken"
+
+#: includes/class-post-type.php:26
+msgid "New Vacancy"
+msgstr "Nieuwe Vacature"
+
+#: includes/class-post-type.php:27
+msgid "View Vacancy"
+msgstr "Bekijk Vacature"
+
+#: includes/class-post-type.php:28
+msgid "Search Vacancies"
+msgstr "Zoek Vacatures"
+
+#: includes/class-post-type.php:29
+#: includes/class-shortcodes.php:26
+#: templates/vacancy-overview.php:72
+msgid "No vacancies found"
+msgstr "Geen vacatures gevonden"
+
+#: includes/class-post-type.php:30
+msgid "No vacancies found in trash"
+msgstr "Geen vacatures gevonden in de prullenbak"
+
+#: includes/class-post-type.php:57
+#: includes/class-post-type.php:59
+msgid "Applications"
+msgstr "Sollicitaties"
+
+#: includes/class-post-type.php:58
+msgid "Application"
+msgstr "Sollicitatie"
+
+#: includes/class-post-type.php:61
+msgid "Add New Application"
+msgstr "Nieuwe Sollicitatie Toevoegen"
+
+#: includes/class-post-type.php:62
+msgid "Edit Application"
+msgstr "Sollicitatie Bewerken"
+
+#: includes/class-post-type.php:63
+msgid "New Application"
+msgstr "Nieuwe Sollicitatie"
+
+#: includes/class-post-type.php:64
+msgid "View Application"
+msgstr "Bekijk Sollicitatie"
+
+#: includes/class-post-type.php:65
+msgid "Search Applications"
+msgstr "Zoek Sollicitaties"
+
+#: includes/class-post-type.php:66
+msgid "No applications found"
+msgstr "Geen sollicitaties gevonden"
+
+#: includes/class-post-type.php:67
+msgid "No applications found in trash"
+msgstr "Geen sollicitaties gevonden in de prullenbak"
+
+#: includes/class-scheduler.php:39
+msgid "Every 4 hours"
+msgstr "Elke 4 uur"
+
+#: includes/class-shortcodes.php:27
+#: templates/vacancy-overview.php:55
+#: templates/vacancy-overview.php:73
+msgid "Loading..."
+msgstr "Laden..."
+
+#: includes/class-shortcodes.php:28
+#: templates/vacancy-overview.php:21
+#: templates/vacancy-overview.php:74
+msgid "Filters"
+msgstr "Filters"
+
+#: includes/class-shortcodes.php:29
+#: templates/vacancy-overview.php:75
+msgid "Close"
+msgstr "Sluiten"
+
+#: includes/class-shortcodes.php:30
+#: templates/vacancies-grid.php:54
+#: templates/vacancy-overview.php:76
+msgid "View Details"
+msgstr "Bekijk Details"
+
+#: includes/class-shortcodes.php:33
+#: templates/vacancy-overview.php:79
+msgid "Salary Range"
+msgstr "Salarisbereik"
+
+#: includes/class-shortcodes.php:35
+#: templates/partials/vacancy-filters.php:20
+#: templates/vacancy-overview.php:81
+msgid "Education Level"
+msgstr "Opleidingsniveau"
+
+#: templates/application-form.php:11
+msgid "Application for:"
+msgstr "Sollicitatie voor:"
+
+#: templates/application-form.php:24
+msgid "Open Application"
+msgstr "Open Sollicitatie"
+
+#: templates/application-form.php:25
+msgid "Submit your application for future opportunities."
+msgstr "Dien je sollicitatie in voor toekomstige mogelijkheden."
+
+#: templates/application-form.php:67
+msgid "Accepted formats: PDF, DOC, DOCX (max 10MB)"
+msgstr "Geaccepteerde formaten: PDF, DOC, DOCX (max 10MB)"
+
+#: templates/application-form.php:84
+msgid "Submit Application"
+msgstr "Sollicitatie Indienen"
+
+#: templates/email/application-notification.php:19
+msgid "New Job Application"
+msgstr "Nieuwe Sollicitatie"
+
+#: templates/email/application-notification.php:23
+msgid "Vacancy:"
+msgstr "Vacature:"
+
+#: templates/email/application-notification.php:27
+msgid "Applicant Details:"
+msgstr "Details Sollicitant:"
+
+#: templates/email/application-notification.php:29
+msgid "Name:"
+msgstr "Naam:"
+
+#: templates/email/application-notification.php:32
+msgid "Email:"
+msgstr "E-mail:"
+
+#: templates/email/application-notification.php:35
+msgid "Phone:"
+msgstr "Telefoon:"
+
+#: templates/email/application-notification.php:40
+msgid "Message:"
+msgstr "Bericht:"
+
+#: templates/email/application-notification.php:47
+msgid "CV:"
+msgstr "CV:"
+
+#: templates/email/application-notification.php:48
+msgid "Download CV"
+msgstr "Download CV"
+
+#: templates/email/application-notification.php:54
+msgid "This email was sent from your Recruit Connect WP Plugin"
+msgstr "Deze e-mail is verzonden vanuit je Recruit Connect WP Plugin"
+
+#: templates/partials/vacancy-filters.php:7
+#: templates/search-form.php:13
+msgid "All Categories"
+msgstr "Alle Categorieën"
+
+#: templates/partials/vacancy-filters.php:22
+msgid "All Levels"
+msgstr "Alle Niveaus"
+
+#: templates/partials/vacancy-filters.php:37
+msgid "All Types"
+msgstr "Alle Soorten"
+
+#: templates/search-form.php:6
+msgid "Search keywords"
+msgstr "Zoekwoorden"
+
+#: templates/search-form.php:29
+msgid "All Education Levels"
+msgstr "Alle Opleidingsniveaus"
+
+#: templates/search-form.php:45
+msgid "All Job Types"
+msgstr "Alle Soorten Dienstverband"
+
+#: templates/search-form.php:60
+msgid "Search"
+msgstr "Zoeken"
+
+#: templates/vacancies-grid.php:75
+msgid "No vacancies found."
+msgstr "Geen vacatures gevonden."
+
+#: templates/vacancy-overview.php:5
+msgid "Show Filters"
+msgstr "Toon Filters"
+
+#: templates/vacancy-overview.php:42
+msgid "Search vacancies..."
+msgstr "Zoek vacatures..."

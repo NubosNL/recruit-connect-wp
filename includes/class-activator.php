@@ -81,31 +81,10 @@ class Activator {
 			'recruit_connect_xml_url' => '',
 			'recruit_connect_application_url' => '',
 			'recruit_connect_detail_param' => 'vacancy_id',
-			'recruit_connect_enable_detail' => '1',
 			'recruit_connect_search_components' => array('category', 'education', 'jobtype', 'salary'),
 			'recruit_connect_thank_you_message' => __('Thank you for your application!', 'recruit-connect-wp'),
 			'recruit_connect_required_fields' => array('name', 'email', 'cv'),
 			'recruit_connect_sync_frequency' => 'daily',
-			'recruit_connect_detail_fields' => array(
-				'description',
-				'company',
-				'location',
-				'salary',
-				'education',
-				'experience',
-				'jobtype',
-				'recruiter'
-			),
-			'recruit_connect_fields_order' => array(
-				'description',
-				'company',
-				'location',
-				'salary',
-				'education',
-				'experience',
-				'jobtype',
-				'recruiter'
-			)
 		);
 
 		foreach ($default_options as $option_name => $option_value) {

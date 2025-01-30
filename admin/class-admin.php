@@ -29,6 +29,15 @@ class Admin {
 	private $version;
 
 	/**
+	 * The settings object.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      Settings
+	 */
+	private $settings; // Declare the $settings property here
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0

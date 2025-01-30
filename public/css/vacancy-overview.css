@@ -1,0 +1,130 @@
+/* Reset any margin/padding from the shortcode wrapper */
+.wp-block-shortcode {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.recruit-connect-vacancy-overview {
+    padding: 2rem 0;
+    width: 100%;
+    background-color: #fff; /* or any color you prefer */
+}
+/* Search Bar */
+.search-bar .input-group-text {
+    background-color: #fff;
+    border-right: none;
+}
+
+.search-bar .form-control {
+    border-left: none;
+}
+
+.search-bar .form-control:focus {
+    box-shadow: none;
+    border-color: #ced4da;
+}
+
+/* Filters */
+.vacancy-filters {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.filter-group label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Vacancy Cards */
+.vacancy-card {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.vacancy-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+}
+
+.vacancy-title {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.vacancy-title a {
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+
+.vacancy-title a:hover {
+    color: var(--bs-primary);
+}
+
+.vacancy-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.vacancy-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vacancy-excerpt {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Highlight search terms */
+mark {
+    background-color: #fff3cd;
+    padding: 0.1em 0.2em;
+    border-radius: 0.2em;
+}
+
+/* Loading state */
+.vacancies-grid.loading {
+    min-height: 200px;
+    position: relative;
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 2rem;
+}
+
+.page-link {
+    padding: 0.5rem 0.75rem;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 991.98px) {
+    .offcanvas {
+        max-width: 300px;
+    }
+
+    .vacancy-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

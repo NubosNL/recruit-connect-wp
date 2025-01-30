@@ -25,11 +25,6 @@ class Settings {
 				'sanitize_callback' => 'sanitize_text_field',
 				'default' => 'vacancy_id'
 			),
-			'recruit_connect_enable_detail' => array(
-				'type' => 'boolean',
-				'sanitize_callback' => array($this, 'sanitize_checkbox'),
-				'default' => true
-			),
 			'recruit_connect_search_components' => array(
 				'type' => 'array',
 				'sanitize_callback' => array($this, 'sanitize_array'),
@@ -50,16 +45,6 @@ class Settings {
 				'sanitize_callback' => array($this, 'sanitize_frequency'),
 				'default' => 'daily'
 			),
-			'recruit_connect_detail_fields' => array(
-				'type' => 'array',
-				'sanitize_callback' => array($this, 'sanitize_array'),
-				'default' => array()
-			),
-			'recruit_connect_fields_order' => array(
-				'type' => 'array',
-				'sanitize_callback' => array($this, 'sanitize_array'),
-				'default' => array()
-			)
 		);
 
 		foreach ($settings as $option_name => $args) {
